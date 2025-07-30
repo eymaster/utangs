@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 import os
+from flask import Flask, render_template, request, redirect, url_for
+# ... (existing imports and config)
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # Render sets this
@@ -30,12 +32,30 @@ def index():
 def debts():
     all_debts = Debt.query.all()
     return render_template('debts.html', debts=all_debts)
+# DELETE route
+@app.route('/delete/<int:debt_id>')
+def delete(debt_id):
+    debt = Debt.query.get_or_404(debt_id)
+    db.session.delete(debt)
+    db.session.commit()
+    return redirect('/debts')
 
+# EDIT route - show form
+@app.route('/edit/<int:debt_id>', methods=['GET', 'POST'])
+def edit(debt_id):
+    debt = Debt.query.get_or_404(debt_id)
+    if request.method == 'POST':
+        debt.name = request.form['name']
+        debt.amount = float(request.form['amount'])
+        debt.reason = request.form['reason']
+        db.session.commit()
+        return redirect('/debts')
+    return render_template('edit.html', debt=debt)
 # One-time init route to create tables
-#@app.route('/initdb')
-#def initdb():
-    #db.create_all()
-    #return "Database tables created."
+@app.route('/initdb')
+def initdb():
+    db.create_all()
+    return "Database tables created."
 
 if __name__ == '__main__':
     with app.app_context():
