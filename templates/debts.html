@@ -7,11 +7,42 @@
 <body class="container py-5">
   
 <!--<h4>Total Amount of Utangs: <span class="text-danger">${{ "%.2f"|format(total_debt) }}</span></h4> -->
-  <h1 class="mb-4">UTANGS Records</h1>
+  
 
-<div class="alert alert-info table-responsive">
+<!-- Toggle Button -->
+  <a href="/debts" class="btn btn-outline-secondary ms-2">View All Debts</a>
+<button class="btn btn-outline-primary mb-3 mt-3" data-bs-toggle="collapse" data-bs-target="#debtTable">
+  <h1 class="mb-4">UTANGS Records</h1>
+</button>
+  
+<!-- Collapsible Table -->
+<div class="collapse show" id="debtTable">
+  <div class="card card-body p-0 table-responsive">
+    <div class="alert alert-info table-responsive">
   <strong>Total Amount Owed:</strong> {{ "%.2f"|format(total_debt) }}
+    </div>
+    <table class="table table-striped mb-0 text-center">
+      <thead class="table-light">
+        <tr>
+          <th>Name</th>
+      <th>Total Amount (PHP)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, amount in debts_summary %}
+    <tr>
+      <td>{{ name }}</td>
+      <td>{{ "%.2f"|format(amount) }}</td>
+      
+    </tr>
+    {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
+
+  
+<!--
 <table class="table text-center">
   <thead>
     <tr>
@@ -29,7 +60,8 @@
     {% endfor %}
   </tbody>
 </table>
-<table class="table table-bordered table-striped text-center">
+  -->
+<table class="table table-bordered table-striped text-center table-responsive">
   <thead>
       <tr>
         <th>Name</th>
