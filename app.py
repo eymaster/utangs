@@ -33,7 +33,7 @@ def index():
             new_debt = Debt(name=name, amount=float(amount), reason=reason)
             db.session.add(new_debt)
             db.session.commit
-            return redirect(url_for('index'))
+            # return redirect(url_for('index'))
             #debts.append({
             #    'name': name,
               #  'amount': float(amount),
