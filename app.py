@@ -49,7 +49,7 @@ def index():
     # Total debt across all people
     total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
 
-    return render_template('index.html')
+   # return render_template('index.html')
     return render_template('index.html', debts_summary=debts_summary, total_debt=total_debt)
 
 @app.route('/debts')
