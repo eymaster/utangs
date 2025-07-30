@@ -25,13 +25,13 @@ def index():
         name = request.form['name']
         amount = float(request.form['amount'])
         reason = request.form['reason']
-        db.session.add(Debt(name=name, amount=amount, reason=reason))
-        db.session.commit()
+        #db.session.add(Debt(name=name, amount=amount, reason=reason))
+        #db.session.commit()
         #return redirect('/index')
         if name and amount and reason:
             new_debt = Debt(name=name, amount=float(amount), reason=reason)
             db.session.add(new_debt)
-            de.session.commit
+            db.session.commit
             return redirect(url_for('index'))
             #debts.append({
             #    'name': name,
