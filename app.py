@@ -18,6 +18,7 @@ class Debt(db.Model):
     name = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     reason = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='Pending')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -25,8 +26,10 @@ def index():
         name = request.form['name']
         amount = float(request.form['amount'])
         reason = request.form['reason']
-        db.session.add(Debt(name=name, amount=amount, reason=reason))
+        status = request.form['status']  # get status
+        db.session.add(Debt(name=name, amount=amount, reason=reason) , status=status)
         db.session.commit()
+        flash('Debt added successfully!', 'success')
         #return redirect('/index')
         #return redirect(url_for('index'))
         #if name and amount and reason:
