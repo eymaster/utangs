@@ -12,8 +12,7 @@
 <div class="alert alert-info">
   <strong>Total Amount Owed:</strong> ${{ "%.2f"|format(total_debt) }}
 </div>
-
-<table class="table table-bordered table-striped">
+<table class="table">
   <thead>
     <tr>
       <th>Name</th>
@@ -24,11 +23,13 @@
     {% for name, amount in debts_summary %}
     <tr>
       <td>{{ name }}</td>
-      <td>${{ "%.2f"|format(amount) }}</td>
+      <td>{{ "%.2f"|format(amount) }}</td>
       
     </tr>
     {% endfor %}
   </tbody>
+</table>
+<table class="table table-bordered table-striped">
   <thead>
       <tr>
         <th>Name</th>
@@ -41,7 +42,7 @@
   {% for debt in debts %}
   <tr>
     <td>{{ debt.name }}</td>
-    <td>${{ "%.2f"|format(debt.amount) }}</td>
+    <td>{{ "%.2f"|format(debt.amount) }}</td>
     <td>{{ debt.reason }}</td>
     <td>
       <a href="{{ url_for('edit', debt_id=debt.id) }}" class="btn btn-sm btn-warning">Edit</a>
