@@ -6,8 +6,8 @@
 </head>
 <body class="container py-5">
   
-<h4>Total Amount of Utangs: <span class="text-danger">${{ "%.2f"|format(total_debt) }}</span></h4>
-  <h1 class="mb-4">All Debt Records</h1>
+<!--<h4>Total Amount of Utangs: <span class="text-danger">${{ "%.2f"|format(total_debt) }}</span></h4> -->
+  <h1 class="mb-4">UTANGS Records</h1>
 
 <div class="alert alert-info">
   <strong>Total Amount Owed:</strong> ${{ "%.2f"|format(total_debt) }}
@@ -15,26 +15,6 @@
 
 <table class="table table-bordered table-striped">
   <thead>
-      <tr>
-        <th>Name</th>
-        <th>Amount ($)</th>
-        <th>Reason</th>
-      </tr>
-  </thead>
-  <tbody>
-  {% for debt in debts %}
-  <tr>
-    <td>{{ debt.name }}</td>
-    <td>${{ "%.2f"|format(debt.amount) }}</td>
-    <td>{{ debt.reason }}</td>
-    <td>
-      <a href="{{ url_for('edit', debt_id=debt.id) }}" class="btn btn-sm btn-warning">Edit</a>
-      <a href="{{ url_for('delete', debt_id=debt.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?');">Delete</a>
-    </td>
-  </tr>
-  {% endfor %}
-  </tbody>
-  <!-- <thead>
     <tr>
       <th>Name</th>
       <th>Total Amount (PHP)</th>
@@ -48,7 +28,30 @@
       
     </tr>
     {% endfor %}
-  </tbody> -->
+  </tbody>
+  <thead>
+      <tr>
+        <th>Name</th>
+        <th>Amount ($)</th>
+        <th>Reason</th>
+        
+      </tr>
+  </thead>
+  <tbody>
+  {% for debt in debts %}
+  <tr>
+    <td>{{ debt.name }}</td>
+    <td>${{ "%.2f"|format(debt.amount) }}</td>
+    <td>{{ debt.reason }}</td>
+    <td>
+      <a href="{{ url_for('edit', debt_id=debt.id) }}" class="btn btn-sm btn-warning">Edit</a>
+      <a href="{{ url_for('delete', debt_id=debt.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?');">Delete</a>
+    </td>
+    
+  </tr>
+  {% endfor %}
+  </tbody>
+  
 </table>
 
   <a href="/" class="btn btn-success">Add Another Debt</a>
