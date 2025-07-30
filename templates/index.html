@@ -15,6 +15,32 @@
   <h1 class="text-center text-dark fw-bold">💳 Utang Manager</h1>
   <p class="text-center text-muted mb-0">Easily record and view all your debts in one place.</p>
   </div>
+
+<!-- Toggle Button -->
+<button class="btn btn-outline-success mb-3" data-bs-toggle="collapse" data-bs-target="#debtForm">
+  Show/Hide Add Debt Form
+</button>
+
+<!-- Collapsible Form -->
+<div class="collapse show" id="debtForm">
+  <div class="card card-body">
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" name="name" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Amount</label>
+        <input type="number" name="amount" class="form-control" step="0.01" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Reason</label>
+        <input type="text" name="reason" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Add Debt</button>
+    </form>
+  </div>
+</div>
   
   <form method="POST" class="border p-4 rounded bg-light mb-3">
     <div class="mb-3">
@@ -61,23 +87,6 @@
   </div>
 </div>
 </body>
-  <h1 class="mb-4">UTANGS Records</h1>
-  <table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Total Amount (PHP)</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for name, amount in debts_summary %}
-    <tr>
-      <td>{{ name }}</td>
-      <td>{{ "%.2f"|format(amount) }}</td>
-      
-    </tr>
-    {% endfor %}
-  </tbody>
-  </table>
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </html>
