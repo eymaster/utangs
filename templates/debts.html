@@ -15,13 +15,17 @@
       </tr>
     </thead>
     <tbody>
-      {% for debt in debts %}
-      <tr>
-        <td>{{ debt.name }}</td>
-        <td>{{ "%.2f"|format(debt.amount) }}</td>
-        <td>{{ debt.reason }}</td>
-      </tr>
-      {% endfor %}
+  {% for debt in debts %}
+  <tr>
+    <td>{{ debt.name }}</td>
+    <td>${{ "%.2f"|format(debt.amount) }}</td>
+    <td>{{ debt.reason }}</td>
+    <td>
+      <a href="{{ url_for('edit', debt_id=debt.id) }}" class="btn btn-sm btn-warning">Edit</a>
+      <a href="{{ url_for('delete', debt_id=debt.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?');">Delete</a>
+    </td>
+  </tr>
+  {% endfor %}
     </tbody>
   </table>
   <a href="/" class="btn btn-success">Add Another Debt</a>
