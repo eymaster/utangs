@@ -94,6 +94,7 @@ def edit(debt_id):
         debt.name = request.form['name']
         debt.amount = float(request.form['amount'])
         debt.reason = request.form['reason']
+        debt.status = request.form['status']
         db.session.commit()
         return redirect('/debts')
     return render_template('edit.html', debt=debt)
