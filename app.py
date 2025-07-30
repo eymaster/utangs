@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 import os
+from flask import jsonify
 from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy import func  # at the top of your file
 # ... (existing imports and config)
@@ -76,6 +77,17 @@ def debts():
     total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
 
     return render_template("debts.html", debts=all_debts, debts_summary=debts_summary, total_debt=total_debt)
+
+
+@app.route('/toggle_status/<int:debt_id>', methods=['POST'])
+def toggle_status(debt_id):
+    data = request.get_json()
+    new_status = data.get('status')
+
+    debt = Debt.query.get_or_404(debt_id)
+    debt.status = new_status
+    db.session.commit()
+    return jsonify({'success': True})
 
 
 # DELETE route
