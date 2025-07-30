@@ -67,7 +67,7 @@
         <th>Amount (PHP)</th>
         <th>Reason</th>
         <th>Status</th>
-        <th>icon</th>
+<!--         <th>icon</th> -->
         <th>Action</th>
         
       </tr>
@@ -84,12 +84,15 @@
         {% else %}
           <span class="badge bg-warning text-dark">Pending</span>
         {% endif %}
-    </td>
-    <td>
-        <input type="checkbox" class="status-toggle"
+      <input type="checkbox" class="status-toggle"
                data-id="{{ debt.id }}"
                {% if debt.status == 'Paid' %}checked{% endif %}>
     </td>
+<!--     <td>
+        <input type="checkbox" class="status-toggle"
+               data-id="{{ debt.id }}"
+               {% if debt.status == 'Paid' %}checked{% endif %}>
+    </td> -->
     
     <td>
       <a href="{{ url_for('edit', debt_id=debt.id) }}" class="btn btn-sm btn-warning">Edit</a>
