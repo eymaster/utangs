@@ -17,10 +17,12 @@
   </div>
 <div class="container">
 <!-- Toggle Button -->
-<button class="btn btn-outline-success mb-3" data-bs-toggle="collapse" data-bs-target="#debtForm" >
-  Show/Hide Add Debt Form
-</button>
-
+  <div class="d-flex justify-content-between">
+    <button class="btn btn-outline-success mb-3" data-bs-toggle="collapse" data-bs-target="#debtForm" >
+    Show/Hide Add Debt Form
+  </button>
+  <a href="/debts" class="btn btn-outline-secondary ms-2">View All Debts</a>
+  </div>
 <!-- Collapsible Form -->
 <div class="collapse show" id="debtForm">
   <div class="card card-body">
@@ -71,7 +73,6 @@
 </form>
   
   <!-- Toggle Button -->
-  <a href="/debts" class="btn btn-outline-secondary ms-2">View All Debts</a>
 <button class="btn btn-outline-primary mb-3 mt-3" data-bs-toggle="collapse" data-bs-target="#debtTable">
   Utangs
 </button>
