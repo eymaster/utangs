@@ -27,7 +27,7 @@ def index():
         amount = float(request.form['amount'])
         reason = request.form['reason']
         status = request.form['status']  # get status
-        db.session.add(Debt(name=name, amount=amount, reason=reason,status=status))
+        db.session.add(Debt(name=name, amount=amount, reason=reason, status=status))
         db.session.commit()
         flash('Debt added successfully!', 'success')
         #return redirect('/index')
