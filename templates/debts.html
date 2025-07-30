@@ -12,11 +12,11 @@
 <!-- Toggle Button -->
   <a href="/debts" class="btn btn-outline-secondary ms-2">View All Debts</a>
 <button class="btn btn-outline-primary mb-3 mt-3" data-bs-toggle="collapse" data-bs-target="#debtTable">
-  <h1 class="mb-4">UTANGS Records</h1>
+  <p class="mb-4">UTANGS Records</p>
 </button>
   
 <!-- Collapsible Table -->
-<div class="collapse show" id="debtTable">
+<div class="collapse" id="debtTable">
   <div class="card card-body p-0 table-responsive">
     <div class="alert alert-info table-responsive">
   <strong>Total Amount Owed:</strong> {{ "%.2f"|format(total_debt) }}
