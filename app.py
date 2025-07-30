@@ -99,7 +99,7 @@ def edit(debt_id):
         return redirect('/debts')
     return render_template('edit.html', debt=debt)
 # One-time init route to create tables
-@app.route('/initdb')
+#@app.route('/initdb')
 def initdb():
     db.create_all()
     return "Database tables created nyeee."
