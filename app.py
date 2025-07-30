@@ -24,10 +24,20 @@ def index():
         name = request.form['name']
         amount = float(request.form['amount'])
         reason = request.form['reason']
-        db.session.add(Debt(name=name, amount=amount, reason=reason))
-        db.session.commit()
-        return redirect('/debts')
-    return render_template('index.html')
+        #db.session.add(Debt(name=name, amount=amount, reason=reason))
+        #db.session.commit()
+        if name and amount and reason:
+            debts.append({
+                'name': name,
+                'amount': float(amount),
+                'reason': reason
+            })
+            flash('Debt added successfully!', 'success')
+            return redirect(url_for('index'))
+    return render_template('index.html', debts=debts)
+    
+        #return redirect('/debts')
+    #return render_template('index.html')
 
 @app.route('/debts')
 def debts():
