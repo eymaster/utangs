@@ -67,6 +67,7 @@
         <th>Amount (PHP)</th>
         <th>Reason</th>
         <th>Status</th>
+        <th>icon</th>
         <th>Action</th>
         
       </tr>
@@ -85,6 +86,12 @@
         {% endif %}
     </td>
     <td>
+        <input type="checkbox" class="status-toggle"
+               data-id="{{ debt.id }}"
+               {% if debt.status == 'Paid' %}checked{% endif %}>
+    </td>
+    
+    <td>
       <a href="{{ url_for('edit', debt_id=debt.id) }}" class="btn btn-sm btn-warning">Edit</a>
       <a href="{{ url_for('delete', debt_id=debt.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?');">Delete</a>
     </td>
@@ -98,4 +105,27 @@
   <a href="/" class="btn btn-success">Add Another Debt</a>
 </body>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+document.querySelectorAll('.status-toggle').forEach(checkbox => {
+  checkbox.addEventListener('change', async function () {
+    const debtId = this.getAttribute('data-id');
+    const newStatus = this.checked ? 'Paid' : 'Pending';
+
+    const response = await fetch(`/toggle_status/${debtId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status: newStatus })
+    });
+
+    if (!response.ok) {
+      alert('Failed to update status');
+    } else {
+      // Refresh page to reflect badge change
+      location.reload();
+    }
+  });
+});
+  </script>
 </html>
