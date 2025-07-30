@@ -31,6 +31,8 @@ def index():
 
 @app.route('/debts')
 def debts():
+    all_debts = Debt.query.all()
+    return render_template('debts.html', debts=all_debts)
     # Group by person and sum their debt
     debts_summary = (
         db.session.query(Debt.name, func.sum(Debt.amount))
@@ -42,7 +44,8 @@ def debts():
     total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
 
     return render_template("debts.html", debts_summary=debts_summary, total_debt=total_debt)
-    
+
+
 # DELETE route
 @app.route('/delete/<int:debt_id>')
 def delete(debt_id):
