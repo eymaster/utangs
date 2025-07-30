@@ -28,17 +28,22 @@ def index():
         db.session.add(Debt(name=name, amount=amount, reason=reason))
         db.session.commit()
         #return redirect('/index')
-        #if name and amount and reason:
-           # debts.append({
-             #   'name': name,
+        if name and amount and reason:
+            new_debt = Debt(name=name, amount=float(amount), reason=reason)
+            db.session.add(new_debt)
+            de.session.commit
+            return redirect(url_for('index'))
+            #debts.append({
+            #    'name': name,
               #  'amount': float(amount),
-              #  'reason': reason
-          #  })
+               # 'reason': reason
+            #})
+            
            # flash('Debt added successfully!', 'success')
             #return redirect(url_for('index'))
     #return render_template('index.html', debts=debts)
     
-        return redirect('/debts')
+        #return redirect('/debts')
 
     debts_summary = (
         db.session.query(Debt.name, func.sum(Debt.amount))
