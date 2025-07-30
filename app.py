@@ -29,7 +29,7 @@ def index():
         status = request.form['status']  # get status
         db.session.add(Debt(name=name, amount=amount, reason=reason, status=status))
         db.session.commit()
-        flash('Debt added successfully!', 'success')
+        #flash('Debt added successfully!', 'success')
         #return redirect('/index')
         #return redirect(url_for('index'))
         #if name and amount and reason:
