@@ -25,15 +25,15 @@ def index():
         name = request.form['name']
         amount = float(request.form['amount'])
         reason = request.form['reason']
-        #db.session.add(Debt(name=name, amount=amount, reason=reason))
-        #db.session.commit()
-        if name and amount and reason:
-            debts.append({
-                'name': name,
-                'amount': float(amount),
-                'reason': reason
-            })
-            flash('Debt added successfully!', 'success')
+        db.session.add(Debt(name=name, amount=amount, reason=reason))
+        db.session.commit()
+        #if name and amount and reason:
+           # debts.append({
+             #   'name': name,
+              #  'amount': float(amount),
+              #  'reason': reason
+          #  })
+           # flash('Debt added successfully!', 'success')
             return redirect(url_for('index'))
     return render_template('index.html', debts=debts)
     
@@ -56,6 +56,21 @@ def debts():
 
     return render_template("debts.html", debts=all_debts, debts_summary=debts_summary, total_debt=total_debt)
 
+@app.route('/debts_index')
+def debts_index():
+    all_debts = Debt.query.all()
+    # return render_template('debts.html', debts=all_debts)
+    # Group by person and sum their debt
+    debts_summary = (
+        db.session.query(Debt.name, func.sum(Debt.amount))
+        .group_by(Debt.name)
+        .all()
+    )
+    
+    # Total debt across all people
+    total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
+
+    return render_template("index.html", debts=all_debts, debts_summary=debts_summary, total_debt=total_debt)
 
 # DELETE route
 @app.route('/delete/<int:debt_id>')
