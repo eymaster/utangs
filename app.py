@@ -12,10 +12,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-@app.route('/initdb')
-def initdb():
-    db.create_all()
-    return "Database initialized!"
+
 # Define database model
 #class User(db.Model):
    # id = db.Column(db.Integer, primary_key=True)
