@@ -39,8 +39,18 @@ def index():
     #return render_template('index.html', debts=debts)
     
         return redirect('/debts')
+
+    debts_summary = (
+        db.session.query(Debt.name, func.sum(Debt.amount))
+        .group_by(Debt.name)
+        .all()
+    )
     
-    return render_template('index.html')
+    # Total debt across all people
+    total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
+
+    
+    return render_template('index.html', debts_summary=debts_summary, total_debt=total_debt)
 
 @app.route('/debts')
 def debts():
