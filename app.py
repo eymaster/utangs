@@ -7,15 +7,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # Provid
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-
-# Define database model
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
 @app.route('/initdb')
 def initdb():
     db.create_all()
     return "Database initialized!"
+# Define database model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+
 # Routes
 @app.route('/', methods=['GET', 'POST'])
 def index():
