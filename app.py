@@ -35,10 +35,10 @@ def index():
           #  })
            # flash('Debt added successfully!', 'success')
             return redirect(url_for('index'))
-    return render_template('index.html', debts=debts)
+    #return render_template('index.html', debts=debts)
     
         #return redirect('/debts')
-    #return render_template('index.html')
+    return render_template('index.html')
 
 @app.route('/debts')
 def debts():
