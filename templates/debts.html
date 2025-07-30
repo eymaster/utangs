@@ -66,6 +66,7 @@
         <th>Name</th>
         <th>Amount (PHP)</th>
         <th>Reason</th>
+        <th>Status</th>
         <th>Action</th>
         
       </tr>
@@ -76,6 +77,13 @@
     <td>{{ debt.name }}</td>
     <td>{{ "%.2f"|format(debt.amount) }}</td>
     <td>{{ debt.reason }}</td>
+    <td>
+        {% if debt.status == 'Paid' %}
+          <span class="badge bg-success">Paid</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Pending</span>
+        {% endif %}
+    </td>
     <td>
       <a href="{{ url_for('edit', debt_id=debt.id) }}" class="btn btn-sm btn-warning">Edit</a>
       <a href="{{ url_for('delete', debt_id=debt.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?');">Delete</a>
