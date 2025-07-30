@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 
 # Database model
 class Debt(db.Model):
-    __tablename__ = 'debts'
+    __tablename__ = 'debt'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
