@@ -58,8 +58,8 @@ def debts():
 
     return render_template("debts.html", debts=all_debts, debts_summary=debts_summary, total_debt=total_debt)
 
-@app.route('/debts_index')
-def debts_index():
+@app.route('/index')
+def index():
     all_debts = Debt.query.all()
     # return render_template('debts.html', debts=all_debts)
     # Group by person and sum their debt
