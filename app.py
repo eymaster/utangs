@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask import Flask, render_template, request, redirect, url_for
+from sqlalchemy import func  # at the top of your file
 # ... (existing imports and config)
 
 app = Flask(__name__)
@@ -31,7 +32,8 @@ def index():
 @app.route('/debts')
 def debts():
     all_debts = Debt.query.all()
-    return render_template('debts.html', debts=all_debts)
+    total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
+    return render_template('debts.html', debts=all_debts, total_debt=total_debt)
 # DELETE route
 @app.route('/delete/<int:debt_id>')
 def delete(debt_id):
