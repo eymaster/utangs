@@ -83,15 +83,13 @@ def debts():
     
     # return render_template('debts.html', debts=all_debts)
     # Group by person and sum their debt
-    debts_summary = (
-        db.session.query(Debt.name, func.sum(Debt.amount))
-        .group_by(Debt.name)
-        .all()
-    )
+    #debts_summary = (db.session.query(Debt.name, func.sum(Debt.amount)).group_by(Debt.name).all())
     
     # Total debt across all people
     total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
     unpaid_total = sum(debt.amount for debt in all_debts if debt.status == 'Pending')
+    # Show only unpaid totals per person
+    debts_summary = db.session.query(Debt.name,db.func.sum(Debt.amount)).filter(Debt.status == 'Pending').group_by(Debt.name).all()
     return render_template(
         "debts.html",
         debts=all_debts,
