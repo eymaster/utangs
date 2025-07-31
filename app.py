@@ -71,7 +71,7 @@ def debts():
         all_names = [row[0] for row in db.session.query(Debt.name).distinct().all()]
     except Exception as e:
         all_names = []
-    print("Error loading names:", e)
+        print("Error loading names:", e)
     #all_names = [row[0] for row in db.session.query(Debt.name).distinct().all()]
     query = Debt.query
 
