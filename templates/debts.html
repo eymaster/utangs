@@ -89,7 +89,7 @@
   </thead>
   <tbody>
   {% for debt in debts %}
-        <tr class="{% if debt.status == 'Pending' %}table-danger{% endif %}">
+    <tr class="{% if debt.status == 'Pending' %}table-danger{% endif %}">
     <td>{{ debt.name }}</td>
     <td>{{ "%.2f"|format(debt.amount) }}</td>
     <td>{{ debt.reason }}</td>
