@@ -91,12 +91,15 @@ def debts():
     
     # Total debt across all people
     total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
-    return render_template("debts.html",
-                           debts=all_debts,
-                           debts_summary=debts_summary,
-                           total_debt=total_debt,
-                           name_filter=name_filter,
-                           all_names=all_names)
+    unpaid_total = sum(debt.amount for debt in all_debts if debt.status == 'Pending')
+    return render_template(
+        "debts.html",
+        debts=all_debts,
+        debts_summary=debts_summary,
+        total_debt=total_debt,  # Optional if you don't use it anymore
+        unpaid_total=unpaid_total,
+        name_filter=name_filter,
+        all_names=all_names)
 
     #return render_template("debts.html", debts=all_debts, debts_summary=debts_summary, total_debt=total_debt)
 
