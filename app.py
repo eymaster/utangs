@@ -50,11 +50,7 @@ def index():
     
         #return redirect('/debts')
 
-    debts_summary = (
-        db.session.query(Debt.name, func.sum(Debt.amount))
-        .group_by(Debt.name)
-        .all()
-    )
+    debts_summary = db.session.query(Debt.name,db.func.sum(Debt.amount)).filter(Debt.status == 'Pending').group_by(Debt.name).all()
     
     # Total debt across all people
     total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
