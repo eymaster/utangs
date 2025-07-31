@@ -7,7 +7,22 @@
 <body class="container py-5">
   
 <!--<h4>Total Amount of Utangs: <span class="text-danger">${{ "%.2f"|format(total_debt) }}</span></h4> -->
-  
+
+  <form method="get" class="row g-2 align-items-center mb-3" action="{{ url_for('debts') }}">
+  <div class="col-auto">
+    <select name="name" class="form-select" onchange="this.form.submit()">
+      <option value="">All Names</option>
+      {% for name in all_names %}
+        <option value="{{ name }}" {% if name == name_filter %}selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% if name_filter %}
+  <div class="col-auto">
+    <a href="{{ url_for('debts') }}" class="btn btn-outline-secondary">Clear</a>
+  </div>
+  {% endif %}
+  </form>
 
 <!-- Toggle Button -->
 <button class="btn btn-outline-primary mb-3 mt-3 w-100" data-bs-toggle="collapse" data-bs-target="#debtTabletot">
