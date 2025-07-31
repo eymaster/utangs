@@ -28,8 +28,8 @@
 </button>
 <div class="collapse" id="debtTabletot">
   <div class="card card-body p-0 table-responsive">
-    <div class="alert alert-info">
-      <strong>Total Amount Owed:</strong> {{ "%.2f"|format(total_debt) }}
+    <div class="alert alert-warning table-responsive">
+  <strong>Total Unpaid:</strong> ₱{{ "%.2f"|format(unpaid_total) }}
     </div>
     <table class="table table-striped mb-0 text-center">
       <thead class="table-light">
