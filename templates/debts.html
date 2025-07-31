@@ -62,7 +62,7 @@
   -->
 <table class="mt-3 table table-bordered table-striped text-center table-responsive">
   <thead>
-      <tr>
+      <tr class="{% if debt.status == 'Pending' %}table-danger{% endif %}">
         <th>Name</th>
         <th>Amount (PHP)</th>
         <th>Reason</th>
