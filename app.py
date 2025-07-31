@@ -65,6 +65,17 @@ def index():
 @app.route('/debts')
 def debts():
     all_debts = Debt.query.all()
+    name_filter = request.args.get('name')
+    # Get list of unique names for dropdown
+    all_names = [row[0] for row in db.session.query(Debt.name).distinct().all()]
+    query = Debt.query
+
+    if name_filter:
+        query = query.filter(Debt.name == name_filter)
+
+    # Sort Pending first
+    all_debts = query.order_by(Debt.status.desc()).all()
+    
     # return render_template('debts.html', debts=all_debts)
     # Group by person and sum their debt
     debts_summary = (
@@ -75,8 +86,14 @@ def debts():
     
     # Total debt across all people
     total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
+    return render_template("debts.html",
+                           debts=all_debts,
+                           debts_summary=debts_summary,
+                           total_debt=total_debt,
+                           name_filter=name_filter,
+                           all_names=all_names
 
-    return render_template("debts.html", debts=all_debts, debts_summary=debts_summary, total_debt=total_debt)
+    #return render_template("debts.html", debts=all_debts, debts_summary=debts_summary, total_debt=total_debt)
 
 
 @app.route('/toggle_status/<int:debt_id>', methods=['POST'])
