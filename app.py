@@ -91,7 +91,7 @@ def debts():
                            debts_summary=debts_summary,
                            total_debt=total_debt,
                            name_filter=name_filter,
-                           all_names=all_names
+                           all_names=all_names)
 
     #return render_template("debts.html", debts=all_debts, debts_summary=debts_summary, total_debt=total_debt)
 
