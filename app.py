@@ -192,6 +192,21 @@ def edit(debt_id):
         return redirect('/debts')
     return render_template('edit.html', debt=debt)
 
+@app.route('/summary_data')
+def summary_data():
+    from sqlalchemy import func
+    summary = (
+        db.session.query(Debt.name, func.sum(Debt.amount))
+        .filter_by(status='Pending')
+        .group_by(Debt.name)
+        .all()
+    )
+    unpaid_total = sum(amount for _, amount in summary)
+    return jsonify({
+        "total": unpaid_total,
+        "summary": [{"name": name, "amount": amount} for name, amount in summary]
+    })
+
 @app.after_request
 def add_header(response):
     response.cache_control.no_store = True
