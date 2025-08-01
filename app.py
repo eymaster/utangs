@@ -183,12 +183,17 @@ def delete(debt_id):
 def delete_debt(debt_id):
     debt = Debt.query.get_or_404(debt_id)
 
-    # Log before deleting
-    log = History(action=f"{debt.name}'s debt of ₱{debt.amount:.2f} for '{debt.reason}' was deleted.")
+    # Log before deletion
+    philippine_time = datetime.now(pytz.timezone("Asia/Manila"))
+    log = History(
+        action=f"Deleted debt: {debt.name} ₱{debt.amount:.2f} '{debt.reason}' [{debt.status}]",
+        timestamp=philippine_time
+    )
     db.session.add(log)
 
     db.session.delete(debt)
     db.session.commit()
+
     return jsonify({'success': True})
 
 
@@ -196,13 +201,30 @@ def delete_debt(debt_id):
 @app.route('/edit/<int:debt_id>', methods=['GET', 'POST'])
 def edit(debt_id):
     debt = Debt.query.get_or_404(debt_id)
+
     if request.method == 'POST':
+        old_data = f"{debt.name} ₱{debt.amount:.2f} '{debt.reason}' [{debt.status}]"
+
+        # Update debt
         debt.name = request.form['name']
         debt.amount = float(request.form['amount'])
         debt.reason = request.form['reason']
         debt.status = request.form['status']
         db.session.commit()
+
+        new_data = f"{debt.name} ₱{debt.amount:.2f} '{debt.reason}' [{debt.status}]"
+
+        # Log edit
+        philippine_time = datetime.now(pytz.timezone("Asia/Manila"))
+        log = History(
+            action=f"Edited debt: {old_data} → {new_data}",
+            timestamp=philippine_time
+        )
+        db.session.add(log)
+        db.session.commit()
+
         return redirect('/debts')
+
     return render_template('edit.html', debt=debt)
 
 @app.route('/summary_data')
