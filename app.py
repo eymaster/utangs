@@ -75,7 +75,7 @@ def index():
         #history_entry = History(action=f"{debt.name} marked a debt as {debt.status}")
         db.session.add(history_entry)
         db.session.commit()
-        return redirect(url_for('debts'))
+        #return redirect(url_for('debts'))
         # Inside your route that updates status
         #flash('Debt added successfully!', 'success')
         #return redirect('/index')
@@ -136,7 +136,17 @@ def debts():
     unpaid_total = sum(debt.amount for debt in all_debts if debt.status == 'Pending')
     # Show only unpaid totals per person
     debts_summary = db.session.query(Debt.name,db.func.sum(Debt.amount)).filter(Debt.status == 'Pending').group_by(Debt.name).all()
+
+    # Get history logs and convert each timestamp to Asia/Manila
+    manila_tz = pytz.timezone("Asia/Manila")
     history_logs = db.session.query(History).order_by(History.timestamp.desc()).limit(50).all()
+
+    for log in history_logs:
+        if log.timestamp.tzinfo is None:
+            log.timestamp = pytz.utc.localize(log.timestamp).astimezone(manila_tz)
+        else:
+            log.timestamp = log.timestamp.astimezone(manila_tz)
+    #history_logs = db.session.query(History).order_by(History.timestamp.desc()).limit(50).all()
     return render_template(
         "debts.html",
         debts=all_debts,
