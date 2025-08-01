@@ -18,8 +18,8 @@ try:
         db.session.query(Debt).delete()
         db.session.commit()
         print("Table dropped successfully.")
-except:
-    print("already deleted")
+except Exception as e:
+    print("already deleted " + str(e))
 
 #with app.app_context():
    # db.drop_all(bind=None, tables=[Debt.__table__])
