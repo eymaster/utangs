@@ -129,7 +129,7 @@ def debts_data():
     })
 
 # OPTIONAL: One-time DB initializer
-@app.route('/init_db')
+#@app.route('/init_db')
 def init_db():
     db.create_all()
     return "✅ Database initialized."
