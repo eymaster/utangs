@@ -33,7 +33,8 @@ class History(db.Model):
 
 # ✅ Now it's safe to drop the table
 with app.app_context():
-    db.drop_all(bind=None, tables=[History.__table__])
+    db.session.query(History).delete()
+    db.session.commit()
 
 
 #@app.route('/delete-table', methods=['POST'])
