@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en" data-bs-theme="dark"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF‑8">
   <title>Utang Manager</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,16 +12,21 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    body {
+    html {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    body, .card, .table {
       background: var(--bs-body-bg);
       color: var(--bs-body-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    body {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
     main { flex: 1; }
     .table-responsive { max-height: 300px; overflow-y: auto; }
-    .card-light { background: #f8f9fa; color: #212529; }
     #installBtn {
       position: fixed;
       bottom: 20px;
@@ -29,9 +36,9 @@
   </style>
 </head>
 <body>
-<header class="navbar navbar-expand-lg bg-gradient p-3 shadow">
+<header class="navbar navbar-expand-lg bg-body-tertiary p-3 shadow">
   <div class="container-fluid">
-    <a href="#" class="navbar-brand d-flex align-items-center text-white text-decoration-none">
+    <a href="#" class="navbar-brand d-flex align-items-center text-body text-decoration-none">
       <img src="{{ url_for('static', filename='img.jpg') }}" width="40" height="40" class="me-2">
       <span class="fs-4 fw-bold">DebtHelp</span>
     </a>
@@ -40,18 +47,23 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link text-white" href="#">Home</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="#">Services</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="/debts">Utangs</a></li>
+        <li class="nav-item"><a class="nav-link text-body" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link text-body" href="#">Services</a></li>
+        <li class="nav-item"><a class="nav-link text-body" href="/debts">Utangs</a></li>
       </ul>
-      <button id="themeToggle" class="btn btn-outline-light me-2"><i class="bi bi-circle-half"></i></button>
-      <a class="btn btn-light text-primary" href="#">Get Help Now</a>
+      <button id="themeToggle" class="btn btn-outline-secondary me-2 d-flex align-items-center">
+        <i id="themeIcon" class="bi me-2"></i>
+        <span id="themeLabel">Theme</span>
+      </button>
+      <a class="btn btn-primary" href="#">Get Help Now</a>
     </div>
   </div>
-  <button id="installBtn" class="btn btn-outline-light d-none">
+  <button id="installBtn" class="btn btn-outline-secondary d-none">
     <i class="bi bi-download"></i> Install App
   </button>
-</header><main class="container my-5">
+</header>
+
+<main class="container my-5">
   <div class="text-center mb-4">
     <h1 class="fw-bold mb-2">💳 Utang Manager</h1>
     <p class="text-muted">Easily record and view all your debts in one place.</p>
@@ -63,7 +75,7 @@
     <a href="/debts" class="btn btn-outline-secondary"><i class="bi bi-table"></i> View All Debts</a>
   </div>
   <div class="collapse show" id="debtForm">
-    <div class="card card-light shadow-sm p-4 mb-5 mx-auto" style="max-width: 600px;">
+    <div class="card bg-body shadow-sm p-4 mb-5 mx-auto" style="max-width: 600px;">
       <h4 class="mb-4 text-center">➕ Add New Utang</h4>
       <form method="POST" action="/">
         {{ get_flashed_messages()|join('<br>')|safe }}
@@ -106,7 +118,7 @@
   <div>
     <h4 class="mb-3">Debt Summary</h4>
     <div class="table-responsive rounded shadow-sm mb-3">
-      <table class="table table-striped table-dark mb-0 text-center">
+      <table class="table table-striped mb-0 text-center">
         <thead>
           <tr><th>Name</th><th>Total Amount (PHP)</th></tr>
         </thead>
@@ -121,16 +133,48 @@
       </table>
     </div>
   </div>
-</main><footer class="bg-dark text-white py-4">
+</main>
+
+<footer class="bg-body-tertiary text-body py-4">
   <div class="container d-flex flex-column flex-md-row justify-content-between">
     <p class="mb-3 mb-md-0">© 2025 DebtHelp Inc. All rights reserved.</p>
     <div>
-      <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
-      <a href="#" class="text-white me-3"><i class="bi bi-twitter"></i></a>
-      <a href="#" class="text-white"><i class="bi bi-linkedin"></i></a>
+      <a href="#" class="text-body me-3"><i class="bi bi-facebook"></i></a>
+      <a href="#" class="text-body me-3"><i class="bi bi-twitter"></i></a>
+      <a href="#" class="text-body"><i class="bi bi-linkedin"></i></a>
     </div>
   </div>
-</footer><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script><script>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Theme switcher with icon + text
+  const html = document.documentElement;
+  const toggleBtn = document.getElementById("themeToggle");
+  const themeLabel = document.getElementById("themeLabel");
+  const themeIcon = document.getElementById("themeIcon");
+
+  function applyTheme(theme) {
+    html.setAttribute("data-bs-theme", theme);
+    localStorage.setItem("theme", theme);
+    if (theme === "dark") {
+      themeLabel.textContent = "Dark Mode";
+      themeIcon.className = "bi bi-moon-stars";
+    } else {
+      themeLabel.textContent = "Light Mode";
+      themeIcon.className = "bi bi-sun";
+    }
+  }
+
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  applyTheme(savedTheme);
+
+  toggleBtn.addEventListener("click", () => {
+    const newTheme = html.getAttribute("data-bs-theme") === "dark" ? "light" : "dark";
+    applyTheme(newTheme);
+  });
+
+  // Form name toggle
   const newNameInput = document.getElementById("newNameInput");
   const existingNameSelect = document.getElementById("existingNameSelect");
   const newNameGroup = document.getElementById("newNameGroup");
@@ -147,7 +191,7 @@
   existingNameSelect.addEventListener("change", toggleNameFields);
   toggleNameFields();
 
-  // PWA service worker registration
+  // Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/static/service-worker.js')
@@ -156,21 +200,7 @@
     });
   }
 
-  // Theme toggle with localStorage
-  const html = document.documentElement;
-  const toggleBtn = document.getElementById("themeToggle");
-  if (localStorage.getItem("theme") === "light") {
-    html.setAttribute("data-bs-theme", "light");
-  }
-
-  toggleBtn.addEventListener("click", () => {
-    const current = html.getAttribute("data-bs-theme");
-    const newTheme = current === "dark" ? "light" : "dark";
-    html.setAttribute("data-bs-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-  });
-
-  // Install PWA manually
+  // Manual PWA install
   let deferredPrompt;
   const installBtn = document.getElementById('installBtn');
   window.addEventListener('beforeinstallprompt', (e) => {
@@ -178,6 +208,7 @@
     deferredPrompt = e;
     installBtn.classList.remove('d-none');
   });
+
   installBtn.addEventListener('click', async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
@@ -191,5 +222,6 @@
       installBtn.classList.add('d-none');
     }
   });
-</script></body>
+</script>
+</body>
 </html>
