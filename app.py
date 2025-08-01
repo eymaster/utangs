@@ -24,7 +24,10 @@ class HistoryLog(db.Model):
 # Home Page
 @app.route('/')
 def index():
-    people = db.session.query(Debt.name).distinct().all()
+    try:
+        people = db.session.query(Debt.name).distinct().all()
+    except Exception:
+        people = []
     return render_template('index.html', all_names=[p[0] for p in people])
 
 # Debts Page
@@ -36,7 +39,6 @@ def show_debts():
         query = query.filter_by(name=name_filter)
     debts = query.order_by(Debt.id.desc()).all()
 
-    # Summary: total unpaid by person
     summary = db.session.query(Debt.name, func.sum(Debt.amount))\
         .filter(Debt.status == 'Pending')\
         .group_by(Debt.name).all()
@@ -126,16 +128,14 @@ def debts_data():
         "unpaid_total": unpaid_total
     })
 
-#@app.route('/init_db')
+# OPTIONAL: One-time DB initializer
+@app.route('/init_db')
 def init_db():
     db.create_all()
-    return "Database initialized!"
-# Initialize DB (Fixed)
+    return "✅ Database initialized."
+
+# Run the app
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
-
-# Run the app
-#if __name__ == '__main__':
-   # app.run(debug=True)
