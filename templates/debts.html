@@ -226,7 +226,7 @@
       chart.update();
     }
 
-    document.querySelectorAll('.delete-btn').forEach(btn => {
+   /* document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         if (!confirm('Delete this debt?')) return;
         const id = btn.getAttribute('data-id');
@@ -239,7 +239,27 @@
           alert('Delete failed.');
         }
       });
-    });
+    }); */
+
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    if (!confirm('Delete this debt?')) return;
+    const id = btn.getAttribute('data-id');
+    const row = btn.closest('tr');
+    try {
+      const res = await fetch(`/delete/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        row.remove();
+        refreshSummaryAndChart(); // Optional if you use a live chart/summary
+      } else {
+        alert('Failed to delete.');
+      }
+    } catch (err) {
+      alert('Error deleting: ' + err.message);
+    }
+  });
+});
+
 
     document.querySelectorAll('.status-toggle').forEach(input => {
       input.addEventListener('change', async () => {
