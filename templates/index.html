@@ -26,7 +26,11 @@
     <a class="nav-link text-white" href="/debts">Utangs</a>
     <a class="btn btn-light text-primary" href="#">Get Help Now</a>
   </nav>
-</header><main class="container my-5">
+  <button id="installBtn" class="btn btn-outline-light d-none">
+  <i class="bi bi-download"></i> Install App
+  </button>
+</header>
+  <main class="container my-5">
   <div class="text-center mb-4">
     <h1 class="fw-bold mb-2">💳 Utang Manager</h1>
     <p class="text-muted">Easily record and view all your debts in one place.</p>
@@ -142,5 +146,30 @@
         .catch(err => console.error('Service worker registration failed:', err));
     });
   }
-</script></body>
+</script>
+<script>
+  let deferredPrompt;
+  const installBtn = document.getElementById('installBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); // Prevent automatic prompt
+    deferredPrompt = e;
+    installBtn.classList.remove('d-none'); // Show the install button
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt(); // Show the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      deferredPrompt = null;
+      installBtn.classList.add('d-none');
+    }
+  });
+</script>
+</body>
 </html>
