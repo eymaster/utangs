@@ -13,9 +13,13 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # Render sets this
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-with app.app_context():
-    db.drop_all(bind=None, tables=[History.__table__])
-    print("Table dropped successfully.")
+try:
+    with app.app_context():
+        db.drop_all(bind=None, tables=[Debt.__table__])
+        print("Table dropped successfully.")
+
+except:
+    print("already deleted")
     
 #with app.app_context():
     #db.session.query(Debt).delete()
