@@ -1,0 +1,18 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Split Summary for "{{ item.name }}"</h2>
+  <p><strong>Total:</strong> ₱{{ item.total_amount }}</p>
+  <p><strong>Owed to:</strong> {{ item.owed_to.name }}</p>
+  <h4 class="mt-4">Shares</h4>
+  <ul class="list-group">
+    {% for share in shares %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ share.person.name }}
+        <span>₱{{ share.share_amount }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

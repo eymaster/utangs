@@ -1,0 +1,38 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Split an Item</h2>
+  <form method="post" action="/split">
+    <div class="mb-3">
+      <label class="form-label">Item Name</label>
+      <input type="text" class="form-control" name="item_name" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Total Amount</label>
+      <input type="number" class="form-control" name="total_amount" step="0.01" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Select People to Split With</label>
+      {% for person in people %}
+        <div class="input-group mb-1">
+          <div class="input-group-text">
+            <input class="form-check-input mt-0" type="checkbox" name="person_ids" value="{{ person.id }}">
+          </div>
+          <span class="input-group-text">{{ person.name }}</span>
+          <input type="number" class="form-control" name="share_amounts_{{ person.id }}" placeholder="Leave blank for equal share">
+        </div>
+      {% endfor %}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Select Who Will Be Paid</label>
+      <select class="form-select" name="owed_to_id" required>
+        {% for person in people %}
+          <option value="{{ person.id }}">{{ person.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Split</button>
+  </form>
+</div>
+{% endblock %}
