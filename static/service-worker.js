@@ -1,24 +1,14 @@
-const CACHE_NAME = 'utang-cache-v1';
-const urlsToCache = [
-  '/',
-  '/static/bootstrap.min.css',
-  '/static/bootstrap.bundle.min.js',
-  '/static/icons/icon-192.png',
-  '/static/icons/icon-512.png'
-];
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
+self.addEventListener("install", (e) => {
+  console.log("Service Worker: Installed");
+  e.waitUntil(
+    caches.open("utang-cache").then((cache) => {
+      return cache.addAll(["/", "/static/192.png", "/static/512.png"]);
     })
   );
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+self.addEventListener("fetch", (e) => {
+  e.respondWith(
+    caches.match(e.request).then((response) => response || fetch(e.request))
   );
 });
