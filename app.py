@@ -25,6 +25,7 @@ class Debt(db.Model):
     amount = db.Column(db.Float, nullable=False)
     reason = db.Column(db.String(200), nullable=False)
     status = db.Column(db.String(20), nullable=False, default='Pending')
+    who_will_pay = db.Column(db.String(100))  # New column
 
 
 #from your_app import db  # adjust this import based on your app structure
