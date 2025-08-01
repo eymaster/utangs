@@ -30,6 +30,16 @@ class History(db.Model):
     action = db.Column(db.String(200), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+@app.route('/delete-table', methods=['POST'])
+def delete_table():
+    db.drop_all(bind=None, tables=[History.__table__])
+    return 'Utang table dropped!'
+   # db.session.query(YourModel).delete()
+   # db.session.commit()
+  #  from your_app.models import YourModel
+   # db.drop_all(bind=None, tables=[YourModel.__table__])
+   # return 'Table dropped!'
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
