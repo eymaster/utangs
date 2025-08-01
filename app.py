@@ -56,8 +56,11 @@ def index():
     # Total debt across all people
     total_debt = db.session.query(func.sum(Debt.amount)).scalar() or 0
 
+    all_names = db.session.query(Debt.name).distinct().all()
+    all_names = [name for (name,) in all_names]  # flatten tuples
+
    # return render_template('index.html')
-    return render_template('index.html', debts_summary=debts_summary, total_debt=total_debt)
+    return render_template('index.html', debts_summary=debts_summary, total_debt=total_debt, all_names=all_names)
 
 @app.route('/debts')
 def debts():
