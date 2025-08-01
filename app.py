@@ -16,7 +16,9 @@ db = SQLAlchemy(app)
 #with app.app_context():
     #db.session.query(History).delete()
     #db.session.commit()
-
+with app.app_context():
+    db.session.execute('ALTER TABLE debt ADD COLUMN lender VARCHAR(100);')
+    db.session.commit()
 # Database model
 class Debt(db.Model):
     __tablename__ = 'debt'
@@ -24,6 +26,7 @@ class Debt(db.Model):
     name = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     reason = db.Column(db.String(200), nullable=False)
+    lender = db.Column(db.String(100))  # ← Add this line
     status = db.Column(db.String(20), nullable=False, default='Pending')
 
 
@@ -65,6 +68,7 @@ def index():
         amount = float(request.form['amount'])
         reason = request.form['reason']
         status = request.form['status']  # get status
+        #debt.lender = request.form['lender']
         db.session.add(Debt(name=name, amount=amount, reason=reason, status=status))
         db.session.commit()
         philippine_time = datetime.now(pytz.timezone("Asia/Manila"))
@@ -201,6 +205,7 @@ def delete_debt(debt_id):
 @app.route('/edit/<int:debt_id>', methods=['GET', 'POST'])
 def edit(debt_id):
     debt = Debt.query.get_or_404(debt_id)
+   # debt.lender = request.form['lender']
 
     if request.method == 'POST':
         old_data = f"{debt.name} ₱{debt.amount:.2f} '{debt.reason}' [{debt.status}]"
