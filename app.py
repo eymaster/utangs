@@ -126,11 +126,12 @@ def debts_data():
         "unpaid_total": unpaid_total
     })
 
-# Initialize DB
-@app.before_first_request
-def create_tables():
-    db.create_all()
+# Initialize DB (Fixed)
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
 
 # Run the app
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+   # app.run(debug=True)
