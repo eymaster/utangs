@@ -134,21 +134,7 @@ def edit(debt_id):
         return redirect('/debts')
     return render_template('edit.html', debt=debt)
 
-@app.after_request
-def add_header(response):
-    response.cache_control.no_store = True
-    return response
 
-# One-time init route to create tables
-#@app.route('/initdb')
-def initdb():
-    db.create_all()
-    return "Database tables created nyeee."
-
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
     
 
 
@@ -249,3 +235,20 @@ def toggle_paid(share_id):
     share.is_paid = not share.is_paid
     db.session.commit()
     return jsonify({'status': 'ok', 'is_paid': share.is_paid})
+
+
+@app.after_request
+def add_header(response):
+    response.cache_control.no_store = True
+    return response
+
+# One-time init route to create tables
+@app.route('/initdb')
+def initdb():
+    db.create_all()
+    return "Database tables created nyeee."
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
