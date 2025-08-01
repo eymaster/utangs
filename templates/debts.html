@@ -132,7 +132,7 @@
     }
 
     themeToggle.addEventListener('change', function () {
-      const newTheme = this.checked ? 'dark' : 'light';
+      const newTheme = this.checked ? 'light' : 'dark';
       root.setAttribute('data-bs-theme', newTheme);
       localStorage.setItem('theme', newTheme);
     });
