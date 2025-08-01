@@ -126,6 +126,10 @@ def debts_data():
         "unpaid_total": unpaid_total
     })
 
+@app.route('/init_db')
+def init_db():
+    db.create_all()
+    return "Database initialized!"
 # Initialize DB (Fixed)
 if __name__ == '__main__':
     with app.app_context():
