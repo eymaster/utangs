@@ -3,56 +3,67 @@
 <head>
   <meta charset="UTF‑8">
   <title>Utang Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body { background: #1f1f1f; color: white; min-height: 100vh; display: flex; flex-direction: column; }
     main { flex: 1; }
-    .table-responsive { max-height: 300px; overflow-y: auto; }
     .card-light { background: #f8f9fa; color: #212529; }
+    .table-responsive { max-height: 300px; overflow-y: auto; }
+    .shadow-sm { box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075); }
   </style>
 </head>
 <body>
 
-<header class="bg-gradient d-flex justify-content-between align-items-center p-3 shadow">
-  <a href="#" class="d-flex align-items-center text-white text-decoration-none">
-    <img src="{{ url_for('static', filename='img.jpg') }}" width="40" height="40" class="me-2">
-    <span class="fs-4 fw-bold">DebtHelp</span>
-  </a>
-  <nav class="nav">
-    <a class="nav-link text-white" href="#">Home</a>
-    <a class="nav-link text-white" href="#">Services</a>
-    <a class="nav-link text-white" href="/debts">Utangs</a>
-    <a class="btn btn-light text-primary" href="#">Get Help Now</a>
-  </nav>
+<!-- Header -->
+<header class="bg-dark p-3 shadow-sm sticky-top">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a href="#" class="d-flex align-items-center text-white text-decoration-none">
+      <img src="{{ url_for('static', filename='img.jpg') }}" width="36" height="36" class="me-2 rounded-circle">
+      <span class="fs-5 fw-bold">DebtHelp</span>
+    </a>
+    <button class="navbar-toggler d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle">
+      <span class="bi bi-list text-white fs-3"></span>
+    </button>
+    <nav class="collapse navbar-collapse d-md-flex justify-content-end gap-3" id="navbarToggle">
+      <a class="nav-link text-white" href="#">Home</a>
+      <a class="nav-link text-white" href="#">Services</a>
+      <a class="nav-link text-white" href="/debts">Utangs</a>
+      <a class="btn btn-sm btn-light text-primary mt-2 mt-md-0" href="#">Get Help Now</a>
+    </nav>
+  </div>
 </header>
 
-<main class="container my-5">
+<!-- Main -->
+<main class="container my-4">
   <div class="text-center mb-4">
-    <h1 class="fw-bold mb-2">💳 Utang Manager</h1>
-    <p class="text-muted">Easily record and view all your debts in one place.</p>
+    <h1 class="fw-bold">💳 Utang Manager</h1>
+    <p class="text-secondary">Track and manage your utangs easily, even on mobile.</p>
   </div>
 
-  <div class="d-grid gap-2 d-md-flex justify-content-md-between mb-3">
+  <div class="d-grid gap-2 d-md-flex justify-content-md-between mb-4">
     <button class="btn btn-outline-success" data-bs-toggle="collapse" data-bs-target="#debtForm">
       <i class="bi bi-plus-circle"></i> Add Utang
     </button>
-    <a href="/debts" class="btn btn-outline-secondary"><i class="bi bi-table"></i> View All Debts</a>
+    <a href="/debts" class="btn btn-outline-secondary">
+      <i class="bi bi-table"></i> View All Debts
+    </a>
   </div>
 
+  <!-- Add Form -->
   <div class="collapse show" id="debtForm">
-  <div class="card card-light shadow-sm p-4 mb-5 mx-auto" style="max-width: 600px;">
-    <h4 class="mb-4 text-center">➕ Add New Utang</h4>
-    <form method="POST" action="/">
-      {{ get_flashed_messages()|join('<br>')|safe }}
+    <div class="card card-light p-4 mb-4 shadow-sm mx-auto" style="max-width: 600px;">
+      <h4 class="mb-3 text-center">➕ Add New Utang</h4>
+      <form method="POST" action="/">
+        {{ get_flashed_messages()|join('<br>')|safe }}
 
-      <div class="row">
-        <div class="col-12 mb-3" id="newNameGroup">
+        <div class="mb-3">
           <label class="form-label">New Name</label>
           <input name="new_name" id="newNameInput" class="form-control" placeholder="Enter new name">
         </div>
 
-        <div class="col-12 mb-3" id="existingNameGroup">
+        <div class="mb-3">
           <label class="form-label">Select Existing Name</label>
           <select name="existing_name" id="existingNameSelect" class="form-select">
             <option value="">-- Choose a name --</option>
@@ -61,38 +72,38 @@
             {% endfor %}
           </select>
         </div>
-      </div>
 
-      <div class="mb-3">
-        <label class="form-label">Amount (PHP)</label>
-        <input name="amount" type="number" step="0.01" class="form-control" placeholder="e.g. 1000" required>
-      </div>
+        <div class="mb-3">
+          <label class="form-label">Amount (PHP)</label>
+          <input name="amount" type="number" step="0.01" class="form-control" placeholder="e.g. 1000" required>
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label">Reason</label>
-        <input name="reason" class="form-control" placeholder="e.g. Grocery Loan" required>
-      </div>
+        <div class="mb-3">
+          <label class="form-label">Reason</label>
+          <input name="reason" class="form-control" placeholder="e.g. Grocery Loan" required>
+        </div>
 
-      <div class="mb-4">
-        <label class="form-label">Status</label>
-        <select name="status" class="form-select" required>
-          <option value="Pending">Pending</option>
-          <option value="Paid">Paid</option>
-        </select>
-      </div>
+        <div class="mb-4">
+          <label class="form-label">Status</label>
+          <select name="status" class="form-select" required>
+            <option value="Pending">Pending</option>
+            <option value="Paid">Paid</option>
+          </select>
+        </div>
 
-      <button class="btn btn-primary w-100">
-        <i class="bi bi-check-circle"></i> Submit Utang
-      </button>
-    </form>
+        <button class="btn btn-primary w-100">
+          <i class="bi bi-check-circle"></i> Submit Utang
+        </button>
+      </form>
+    </div>
   </div>
-</div>
 
+  <!-- Debt Summary Table -->
   <div>
-    <h4 class="mb-3">Debt Summary</h4>
-    <div class="table-responsive rounded shadow-sm mb-3">
-      <table class="table table-striped table-dark mb-0 text-center">
-        <thead>
+    <h4 class="mb-3">📊 Debt Summary</h4>
+    <div class="table-responsive shadow-sm rounded mb-3">
+      <table class="table table-dark table-hover text-center mb-0">
+        <thead class="table-secondary text-dark">
           <tr><th>Name</th><th>Total Amount (PHP)</th></tr>
         </thead>
         <tbody>
@@ -105,13 +116,13 @@
         </tbody>
       </table>
     </div>
-    <!--<div class="text-end text-white fw-bold">Total: ₱{{ "%.2f"|format(total_debt) }}</div> -->
   </div>
 </main>
 
-<footer class="bg-dark text-white py-4">
-  <div class="container d-flex flex-column flex-md-row justify-content-between">
-    <p class="mb-3 mb-md-0">© 2025 DebtHelp Inc. All rights reserved.</p>
+<!-- Footer -->
+<footer class="bg-black text-white py-3 mt-auto">
+  <div class="container text-center small">
+    <div class="mb-2">© 2025 DebtHelp Inc.</div>
     <div>
       <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
       <a href="#" class="text-white me-3"><i class="bi bi-twitter"></i></a>
@@ -124,29 +135,18 @@
 <script>
   const newNameInput = document.getElementById("newNameInput");
   const existingNameSelect = document.getElementById("existingNameSelect");
-  const newNameGroup = document.getElementById("newNameGroup");
-  const existingNameGroup = document.getElementById("existingNameGroup");
 
   function toggleNameFields() {
-    const hasNewName = newNameInput.value.trim() !== "";
-    const hasExisting = existingNameSelect.value !== "";
+    const newNameFilled = newNameInput.value.trim() !== "";
+    const existingSelected = existingNameSelect.value !== "";
 
-    if (hasNewName) {
-      existingNameGroup.style.display = "none";
-    } else {
-      existingNameGroup.style.display = "block";
-    }
-
-    if (hasExisting) {
-      newNameGroup.style.display = "none";
-    } else {
-      newNameGroup.style.display = "block";
-    }
+    existingNameSelect.closest('.mb-3').style.display = newNameFilled ? "none" : "block";
+    newNameInput.closest('.mb-3').style.display = existingSelected ? "none" : "block";
   }
 
   newNameInput.addEventListener("input", toggleNameFields);
   existingNameSelect.addEventListener("change", toggleNameFields);
-  toggleNameFields(); // initial call
+  toggleNameFields(); // initialize
 </script>
 </body>
 </html>
