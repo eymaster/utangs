@@ -5,6 +5,7 @@ from flask import jsonify
 from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy import func  # at the top of your file
 # ... (existing imports and config)
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -21,6 +22,14 @@ class Debt(db.Model):
     reason = db.Column(db.String(200), nullable=False)
     status = db.Column(db.String(20), nullable=False, default='Pending')
 
+
+#from your_app import db  # adjust this import based on your app structure
+
+class History(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    action = db.Column(db.String(200), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -31,6 +40,10 @@ def index():
         status = request.form['status']  # get status
         db.session.add(Debt(name=name, amount=amount, reason=reason, status=status))
         db.session.commit()
+        history_entry = History(action=f"{debt.name} marked a debt as {debt.status}")
+        db.session.add(history_entry)
+        db.session.commit()
+        # Inside your route that updates status
         #flash('Debt added successfully!', 'success')
         #return redirect('/index')
         #return redirect(url_for('index'))
