@@ -16,10 +16,7 @@ db = SQLAlchemy(app)
 #with app.app_context():
     #db.session.query(History).delete()
     #db.session.commit()
-# with app.app_context():
-#     db.session.query(Debt).delete()
-#     db.session.commit()
-    
+
 # Database model
 class Debt(db.Model):
     __tablename__ = 'debt'
@@ -28,7 +25,6 @@ class Debt(db.Model):
     amount = db.Column(db.Float, nullable=False)
     reason = db.Column(db.String(200), nullable=False)
     status = db.Column(db.String(20), nullable=False, default='Pending')
-    who_will_pay = db.Column(db.String(100))  # New column
 
 
 #from your_app import db  # adjust this import based on your app structure
