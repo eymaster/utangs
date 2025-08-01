@@ -2,202 +2,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Utang Tracker - Debts</title>
+  <title>Utang Tracker</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
+    body {
+      transition: background-color 0.3s, color 0.3s;
+    }
     .theme-toggle {
       cursor: pointer;
     }
-    .modal-dark .modal-content {
-      background-color: #1f1f1f;
-      color: white;
-    }
-    .modal-light .modal-content {
-      background-color: #fff;
-      color: black;
+    .modal-content {
+      color: inherit;
+      background-color: var(--bs-body-bg);
     }
   </style>
 </head>
 <body>
-  <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div>
-        <a href="/" class="btn btn-outline-primary">🏠 Home</a>
-      </div>
-      <div>
-        <span class="theme-toggle btn btn-sm btn-secondary">🌙 Dark</span>
-      </div>
-    </div><h2 class="mb-4">All Debts</h2>
-
-<div class="mb-3">
-  <label for="personFilter" class="form-label">Filter by Person</label>
-  <select id="personFilter" class="form-select">
-    <option value="">All</option>
-    {% for name in all_names %}
-      <option value="{{ name }}" {% if name == name_filter %}selected{% endif %}>{{ name }}</option>
-    {% endfor %}
-  </select>
-</div>
-
-<table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Amount</th>
-      <th>Reason</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for debt in debts %}
-      <tr>
-        <td>{{ debt.name }}</td>
-        <td>₱{{ '%.2f' | format(debt.amount) }}</td>
-        <td>{{ debt.reason }}</td>
-        <td>{{ debt.status }}</td>
-        <td>
-          <button class="btn btn-sm btn-warning edit-btn" data-id="{{ debt.id }}" data-name="{{ debt.name }}" data-amount="{{ debt.amount }}" data-reason="{{ debt.reason }}" data-status="{{ debt.status }}">Edit</button>
-          <button class="btn btn-sm btn-danger delete-btn" data-id="{{ debt.id }}">Delete</button>
-        </td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-<div class="mt-4">
-  <h5>Total Unpaid Summary:</h5>
-  <ul id="summary-list">
-    {% for name, amount in debts_summary %}
-      <li>{{ name }}: ₱{{ '%.2f' | format(amount) }}</li>
-    {% endfor %}
-  </ul>
-</div>
-
-<div class="mt-5">
-  <h5>History Logs:</h5>
-  <ul>
-    {% for log in history_logs %}
-      <li>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }} — {{ log.action }}</li>
-    {% endfor %}
-  </ul>
-</div>
-
-  </div>  <!-- Edit Modal -->  <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-      <form method="POST" id="editForm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Edit Debt</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <input type="hidden" name="id" id="edit-id">
-            <div class="mb-3">
-              <label for="edit-name" class="form-label">Name</label>
-              <input type="text" name="name" id="edit-name" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit-amount" class="form-label">Amount</label>
-              <input type="number" name="amount" id="edit-amount" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit-reason" class="form-label">Reason</label>
-              <input type="text" name="reason" id="edit-reason" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit-status" class="form-label">Status</label>
-              <select name="status" id="edit-status" class="form-select">
-                <option value="Pending">Pending</option>
-                <option value="Paid">Paid</option>
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-          </div>
-        </div>
-      </form>
+<div class="container py-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">Utang Tracker</h2>
+    <div>
+      <button class="btn btn-sm btn-outline-secondary theme-toggle" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span> <span id="theme-label">Dark</span>
+      </button>
     </div>
-  </div>  <!-- Delete Confirmation -->  <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+  </div>  <div class="mb-3">
+    <label for="personFilter" class="form-label">Filter by person:</label>
+    <select class="form-select" id="personFilter">
+      <option value="">All</option>
+      {% for name in all_names %}
+        <option value="{{ name }}" {% if name_filter == name %}selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  </div>  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Reason</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="debtTable">
+      {% for debt in debts %}
+        <tr data-name="{{ debt.name }}">
+          <td>{{ debt.name }}</td>
+          <td>₱{{ '{:.2f}'.format(debt.amount) }}</td>
+          <td>{{ debt.reason }}</td>
+          <td>
+            <select class="form-select form-select-sm status-select" data-id="{{ debt.id }}">
+              <option value="Pending" {% if debt.status == 'Pending' %}selected{% endif %}>Pending</option>
+              <option value="Paid" {% if debt.status == 'Paid' %}selected{% endif %}>Paid</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ debt.id }}" data-name="{{ debt.name }}" data-amount="{{ debt.amount }}" data-reason="{{ debt.reason }}" data-status="{{ debt.status }}">Edit</button>
+            <button class="btn btn-sm btn-danger delete-btn" data-id="{{ debt.id }}" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>  <div class="my-3">
+    <h5>Summary</h5>
+    <ul id="summaryList">
+      {% for name, amount in debts_summary %}
+        <li>{{ name }}: ₱{{ '{:.2f}'.format(amount) }}</li>
+      {% endfor %}
+    </ul>
+    <p class="fw-bold">Total Unpaid: ₱{{ '{:.2f}'.format(unpaid_total) }}</p>
+  </div>  <h5>History Log</h5>
+  <ul class="list-group mb-4">
+    {% for log in history_logs %}
+      <li class="list-group-item d-flex justify-content-between">
+        <span>{{ log.action }}</span>
+        <small class="text-muted">{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+      </li>
+    {% endfor %}
+  </ul>
+</div><!-- Edit Modal --><div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" id="editForm">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Confirm Deletion</h5>
+          <h5 class="modal-title">Edit Debt</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          Are you sure you want to delete this debt?
+          <input type="hidden" name="id" id="edit-id">
+          <div class="mb-3">
+            <label>Name</label>
+            <input type="text" class="form-control" name="name" id="edit-name" required>
+          </div>
+          <div class="mb-3">
+            <label>Amount</label>
+            <input type="number" step="0.01" class="form-control" name="amount" id="edit-amount" required>
+          </div>
+          <div class="mb-3">
+            <label>Reason</label>
+            <input type="text" class="form-control" name="reason" id="edit-reason" required>
+          </div>
+          <div class="mb-3">
+            <label>Status</label>
+            <select class="form-select" name="status" id="edit-status">
+              <option value="Pending">Pending</option>
+              <option value="Paid">Paid</option>
+            </select>
+          </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <a href="#" class="btn btn-danger" id="confirmDelete">Yes, Delete</a>
+          <button type="submit" class="btn btn-primary">Save changes</button>
         </div>
       </div>
+    </form>
+  </div>
+</div><!-- Delete Modal --><div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this debt?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+      </div>
     </div>
-  </div>  <script>
-    const themeToggle = document.querySelector('.theme-toggle');
-    const html = document.documentElement;
+  </div>
+</div><script>
+  const themeToggle = document.querySelector(".theme-toggle");
+  const root = document.documentElement;
 
-    function setTheme(theme) {
-      html.setAttribute('data-bs-theme', theme);
-      themeToggle.textContent = theme === 'dark' ? '🌙 Dark' : '☀️ Light';
-      localStorage.setItem('theme', theme);
-      document.querySelectorAll('.modal').forEach(modal => {
-        modal.classList.remove('modal-dark', 'modal-light');
-        modal.classList.add(`modal-${theme}`);
-      });
-    }
+  function toggleTheme() {
+    let current = root.getAttribute("data-bs-theme");
+    const next = current === "dark" ? "light" : "dark";
+    root.setAttribute("data-bs-theme", next);
+    localStorage.setItem("theme", next);
+    document.getElementById("theme-icon").textContent = next === "dark" ? "🌙" : "☀️";
+    document.getElementById("theme-label").textContent = next.charAt(0).toUpperCase() + next.slice(1);
+  }
 
-    themeToggle.addEventListener('click', () => {
-      const newTheme = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
-      setTheme(newTheme);
+  // Load theme preference
+  window.addEventListener("DOMContentLoaded", () => {
+    const saved = localStorage.getItem("theme") || "dark";
+    root.setAttribute("data-bs-theme", saved);
+    document.getElementById("theme-icon").textContent = saved === "dark" ? "🌙" : "☀️";
+    document.getElementById("theme-label").textContent = saved.charAt(0).toUpperCase() + saved.slice(1);
+  });
+
+  // Status change
+  $(".status-select").change(function () {
+    const id = $(this).data("id");
+    const status = $(this).val();
+    $.post(`/toggle_status/${id}`, JSON.stringify({ status }), () => {
+      updateSummary();
     });
+  });
 
-    setTheme(localStorage.getItem('theme') || 'dark');
+  // Edit modal
+  $(".edit-btn").click(function () {
+    $("#edit-id").val($(this).data("id"));
+    $("#edit-name").val($(this).data("name"));
+    $("#edit-amount").val($(this).data("amount"));
+    $("#edit-reason").val($(this).data("reason"));
+    $("#edit-status").val($(this).data("status"));
+    $("#editForm").attr("action", `/edit/${$(this).data("id")}`);
+  });
 
-    $(document).ready(function () {
-      $('#personFilter').on('change', function () {
-        const selectedName = $(this).val();
-        const url = new URL(window.location.href);
-        if (selectedName) {
-          url.searchParams.set('name', selectedName);
-        } else {
-          url.searchParams.delete('name');
-        }
-        window.location.href = url.toString();
-      });
-
-      $('.edit-btn').click(function () {
-        const id = $(this).data('id');
-        $('#edit-id').val(id);
-        $('#edit-name').val($(this).data('name'));
-        $('#edit-amount').val($(this).data('amount'));
-        $('#edit-reason').val($(this).data('reason'));
-        $('#edit-status').val($(this).data('status'));
-        $('#editForm').attr('action', `/edit/${id}`);
-        new bootstrap.Modal(document.getElementById('editModal')).show();
-      });
-
-      $('.delete-btn').click(function () {
-        const id = $(this).data('id');
-        $('#confirmDelete').attr('href', `/delete/${id}`);
-        new bootstrap.Modal(document.getElementById('deleteModal')).show();
-      });
-
-      function refreshSummary() {
-        $.getJSON('/summary_data', function (data) {
-          const list = $('#summary-list');
-          list.empty();
-          data.summary.forEach(item => {
-            list.append(`<li>${item.name}: ₱${item.amount.toFixed(2)}</li>`);
-          });
-        });
-      }
-
-      setInterval(refreshSummary, 5000);
+  // Delete modal
+  let deleteId;
+  $(".delete-btn").click(function () {
+    deleteId = $(this).data("id");
+  });
+  $("#confirmDelete").click(function () {
+    $.ajax({
+      url: `/delete/${deleteId}`,
+      type: "DELETE",
+      success: () => location.reload()
     });
-  </script></body>
+  });
+
+  // Live filtering
+  $("#personFilter").change(function () {
+    const name = $(this).val();
+    window.location.href = name ? `?name=${encodeURIComponent(name)}` : window.location.pathname;
+  });
+
+  // Live summary update
+  function updateSummary() {
+    $.getJSON("/summary_data", function (data) {
+      let list = data.summary.map(s => `<li>${s.name}: ₱${s.amount.toFixed(2)}</li>`).join('');
+      $("#summaryList").html(list);
+      $(".fw-bold").text(`Total Unpaid: ₱${data.total.toFixed(2)}`);
+    });
+  }
+
+  setInterval(updateSummary, 5000);
+</script></body>
 </html>
