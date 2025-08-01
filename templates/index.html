@@ -121,26 +121,32 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
+<script>
   const newNameInput = document.getElementById("newNameInput");
   const existingNameSelect = document.getElementById("existingNameSelect");
+  const newNameGroup = document.getElementById("newNameGroup");
+  const existingNameGroup = document.getElementById("existingNameGroup");
 
   function toggleNameFields() {
     const hasNewName = newNameInput.value.trim() !== "";
-    const hasSelectedName = existingNameSelect.value !== "";
+    const hasExisting = existingNameSelect.value !== "";
 
-    // Hide existing name dropdown if new name has value
-    existingNameSelect.parentElement.style.display = hasNewName ? "none" : "block";
+    if (hasNewName) {
+      existingNameGroup.style.display = "none";
+    } else {
+      existingNameGroup.style.display = "block";
+    }
 
-    // Hide new name input if an existing name is selected
-    newNameInput.parentElement.style.display = hasSelectedName ? "none" : "block";
+    if (hasExisting) {
+      newNameGroup.style.display = "none";
+    } else {
+      newNameGroup.style.display = "block";
+    }
   }
 
   newNameInput.addEventListener("input", toggleNameFields);
   existingNameSelect.addEventListener("change", toggleNameFields);
-
-  // Run once on page load
-  toggleNameFields();
-  </script>
+  toggleNameFields(); // initial call
+</script>
 </body>
 </html>
