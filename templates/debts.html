@@ -1,194 +1,203 @@
-<!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<!DOCTYPE html><html lang="en" data-bs-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <title>Utang Manager - Debts</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utang Tracker - Debts</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <style>
-    body {
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
     .theme-toggle {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
       cursor: pointer;
     }
     .modal-dark .modal-content {
-      background-color: #343a40;
+      background-color: #1f1f1f;
       color: white;
     }
     .modal-light .modal-content {
       background-color: #fff;
-      color: #000;
+      color: black;
     }
   </style>
 </head>
 <body>
-<div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Debts</h2>
-    <button id="themeToggle" class="btn btn-outline-secondary">
-      <span id="themeIcon">🌙</span> <span id="themeLabel">Dark Mode</span>
-    </button>
-  </div>
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <a href="/" class="btn btn-outline-primary">🏠 Home</a>
+      </div>
+      <div>
+        <span class="theme-toggle btn btn-sm btn-secondary">🌙 Dark</span>
+      </div>
+    </div><h2 class="mb-4">All Debts</h2>
 
-  <div id="summary" class="mb-4"></div>
+<div class="mb-3">
+  <label for="personFilter" class="form-label">Filter by Person</label>
+  <select id="personFilter" class="form-select">
+    <option value="">All</option>
+    {% for name in all_names %}
+      <option value="{{ name }}" {% if name == name_filter %}selected{% endif %}>{{ name }}</option>
+    {% endfor %}
+  </select>
+</div>
 
-  <table class="table table-bordered table-hover">
-    <thead class="table-light">
-      <tr>
-        <th>Name</th>
-        <th>Amount (₱)</th>
-        <th>Reason</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for debt in debts %}
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Amount</th>
+      <th>Reason</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for debt in debts %}
       <tr>
         <td>{{ debt.name }}</td>
-        <td>{{ debt.amount }}</td>
+        <td>₱{{ '%.2f' | format(debt.amount) }}</td>
         <td>{{ debt.reason }}</td>
         <td>{{ debt.status }}</td>
         <td>
-          <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal"
-                  data-id="{{ debt.id }}" data-name="{{ debt.name }}" data-amount="{{ debt.amount }}"
-                  data-reason="{{ debt.reason }}" data-status="{{ debt.status }}">
-            Edit
-          </button>
-          <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ debt.id }})">Delete</button>
+          <button class="btn btn-sm btn-warning edit-btn" data-id="{{ debt.id }}" data-name="{{ debt.name }}" data-amount="{{ debt.amount }}" data-reason="{{ debt.reason }}" data-status="{{ debt.status }}">Edit</button>
+          <button class="btn btn-sm btn-danger delete-btn" data-id="{{ debt.id }}">Delete</button>
         </td>
       </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="mt-4">
+  <h5>Total Unpaid Summary:</h5>
+  <ul id="summary-list">
+    {% for name, amount in debts_summary %}
+      <li>{{ name }}: ₱{{ '%.2f' | format(amount) }}</li>
+    {% endfor %}
+  </ul>
 </div>
 
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1">
-  <div class="modal-dialog">
-    <form method="POST" id="editForm">
+<div class="mt-5">
+  <h5>History Logs:</h5>
+  <ul>
+    {% for log in history_logs %}
+      <li>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }} — {{ log.action }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+  </div>  <!-- Edit Modal -->  <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form method="POST" id="editForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Debt</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" id="edit-id">
+            <div class="mb-3">
+              <label for="edit-name" class="form-label">Name</label>
+              <input type="text" name="name" id="edit-name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit-amount" class="form-label">Amount</label>
+              <input type="number" name="amount" id="edit-amount" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit-reason" class="form-label">Reason</label>
+              <input type="text" name="reason" id="edit-reason" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit-status" class="form-label">Status</label>
+              <select name="status" id="edit-status" class="form-select">
+                <option value="Pending">Pending</option>
+                <option value="Paid">Paid</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>  <!-- Delete Confirmation -->  <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Edit Debt</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title">Confirm Deletion</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <input type="hidden" name="id" id="edit-id">
-          <div class="mb-3">
-            <label for="edit-name" class="form-label">Name</label>
-            <input type="text" class="form-control" name="name" id="edit-name" required>
-          </div>
-          <div class="mb-3">
-            <label for="edit-amount" class="form-label">Amount</label>
-            <input type="number" class="form-control" name="amount" id="edit-amount" required>
-          </div>
-          <div class="mb-3">
-            <label for="edit-reason" class="form-label">Reason</label>
-            <input type="text" class="form-control" name="reason" id="edit-reason" required>
-          </div>
-          <div class="mb-3">
-            <label for="edit-status" class="form-label">Status</label>
-            <select class="form-select" name="status" id="edit-status">
-              <option value="Pending">Pending</option>
-              <option value="Paid">Paid</option>
-            </select>
-          </div>
+          Are you sure you want to delete this debt?
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Save Changes</button>
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <a href="#" class="btn btn-danger" id="confirmDelete">Yes, Delete</a>
         </div>
       </div>
-    </form>
-  </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Confirm Delete</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to delete this debt?
-      </div>
-      <div class="modal-footer">
-        <a href="#" id="deleteLink" class="btn btn-danger">Yes, Delete</a>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-      </div>
     </div>
-  </div>
-</div>
+  </div>  <script>
+    const themeToggle = document.querySelector('.theme-toggle');
+    const html = document.documentElement;
 
-<script>
-  const currentTheme = localStorage.getItem('theme') || 'dark';
-  document.documentElement.setAttribute('data-bs-theme', currentTheme);
-  updateThemeToggle(currentTheme);
+    function setTheme(theme) {
+      html.setAttribute('data-bs-theme', theme);
+      themeToggle.textContent = theme === 'dark' ? '🌙 Dark' : '☀️ Light';
+      localStorage.setItem('theme', theme);
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.classList.remove('modal-dark', 'modal-light');
+        modal.classList.add(`modal-${theme}`);
+      });
+    }
 
-  document.getElementById("themeToggle").addEventListener("click", () => {
-    const newTheme = document.documentElement.getAttribute("data-bs-theme") === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-bs-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-    updateThemeToggle(newTheme);
-  });
-
-  function updateThemeToggle(theme) {
-    const label = theme === 'dark' ? 'Dark Mode' : 'Light Mode';
-    const icon = theme === 'dark' ? '🌙' : '☀️';
-    document.getElementById("themeLabel").textContent = label;
-    document.getElementById("themeIcon").textContent = icon;
-
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-      modal.classList.remove('modal-dark', 'modal-light');
-      modal.classList.add(theme === 'dark' ? 'modal-dark' : 'modal-light');
+    themeToggle.addEventListener('click', () => {
+      const newTheme = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+      setTheme(newTheme);
     });
-  }
 
-  function confirmDelete(id) {
-    const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
-    document.getElementById("deleteLink").href = "/delete/" + id;
-    deleteModal.show();
-  }
+    setTheme(localStorage.getItem('theme') || 'dark');
 
-  const editModal = document.getElementById('editModal');
-  editModal.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget;
-    document.getElementById('edit-id').value = button.getAttribute('data-id');
-    document.getElementById('edit-name').value = button.getAttribute('data-name');
-    document.getElementById('edit-amount').value = button.getAttribute('data-amount');
-    document.getElementById('edit-reason').value = button.getAttribute('data-reason');
-    document.getElementById('edit-status').value = button.getAttribute('data-status');
+    $(document).ready(function () {
+      $('#personFilter').on('change', function () {
+        const selectedName = $(this).val();
+        const url = new URL(window.location.href);
+        if (selectedName) {
+          url.searchParams.set('name', selectedName);
+        } else {
+          url.searchParams.delete('name');
+        }
+        window.location.href = url.toString();
+      });
 
-    const theme = document.documentElement.getAttribute('data-bs-theme');
-    editModal.classList.remove('modal-dark', 'modal-light');
-    editModal.classList.add(theme === 'dark' ? 'modal-dark' : 'modal-light');
+      $('.edit-btn').click(function () {
+        const id = $(this).data('id');
+        $('#edit-id').val(id);
+        $('#edit-name').val($(this).data('name'));
+        $('#edit-amount').val($(this).data('amount'));
+        $('#edit-reason').val($(this).data('reason'));
+        $('#edit-status').val($(this).data('status'));
+        $('#editForm').attr('action', `/edit/${id}`);
+        new bootstrap.Modal(document.getElementById('editModal')).show();
+      });
 
-    document.getElementById('editForm').action = '/edit/' + button.getAttribute('data-id');
-  });
+      $('.delete-btn').click(function () {
+        const id = $(this).data('id');
+        $('#confirmDelete').attr('href', `/delete/${id}`);
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+      });
 
-  async function fetchSummary() {
-    const res = await fetch("/summary_data");
-    const data = await res.json();
-    const summaryDiv = document.getElementById("summary");
+      function refreshSummary() {
+        $.getJSON('/summary_data', function (data) {
+          const list = $('#summary-list');
+          list.empty();
+          data.summary.forEach(item => {
+            list.append(`<li>${item.name}: ₱${item.amount.toFixed(2)}</li>`);
+          });
+        });
+      }
 
-    let html = `<h5>Total Unpaid: ₱${data.total.toFixed(2)}</h5><ul>`;
-    data.summary.forEach(entry => {
-      html += `<li><strong>${entry.name}</strong>: ₱${entry.amount.toFixed(2)}</li>`;
+      setInterval(refreshSummary, 5000);
     });
-    html += "</ul>";
-    summaryDiv.innerHTML = html;
-  }
-
-  fetchSummary();
-  setInterval(fetchSummary, 5000); // Auto-refresh every 5s
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  </script></body>
 </html>
