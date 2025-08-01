@@ -43,6 +43,7 @@
         <th>Amount</th>
         <th>Reason</th>
         <th>Status</th>
+        <th>Lender</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -58,6 +59,7 @@
               <option value="Paid" {% if debt.status == 'Paid' %}selected{% endif %}>Paid</option>
             </select>
           </td>
+          <td>{{ debt.lender }}</td>
           <td>
             <button class="btn btn-sm btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ debt.id }}" data-name="{{ debt.name }}" data-amount="{{ debt.amount }}" data-reason="{{ debt.reason }}" data-status="{{ debt.status }}">Edit</button>
             <button class="btn btn-sm btn-danger delete-btn" data-id="{{ debt.id }}" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
@@ -110,6 +112,10 @@
               <option value="Pending">Pending</option>
               <option value="Paid">Paid</option>
             </select>
+          </div>
+          <div class="mb-3">
+  <label>Lender</label>
+  <input type="text" class="form-control" name="lender" id="edit-lender" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -171,6 +177,7 @@
     $("#edit-amount").val($(this).data("amount"));
     $("#edit-reason").val($(this).data("reason"));
     $("#edit-status").val($(this).data("status"));
+    $("#edit-lender").val($(this).data("lender"));
     $("#editForm").attr("action", `/edit/${$(this).data("id")}`);
   });
 
