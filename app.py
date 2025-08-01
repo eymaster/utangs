@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy import func  # at the top of your file
 # ... (existing imports and config)
 from datetime import datetime
+import pytz
 
 
 app = Flask(__name__)
@@ -66,7 +67,11 @@ def index():
         status = request.form['status']  # get status
         db.session.add(Debt(name=name, amount=amount, reason=reason, status=status))
         db.session.commit()
-        history_entry = History(action=f"{name} added a new debt of ₱{amount:.2f} for '{reason}'")
+        philippine_time = datetime.now(pytz.timezone("Asia/Manila"))
+        history_entry = History(
+            action=f"{name} added a new debt of ₱{amount:.2f} for '{reason}'",
+            timestamp=philippine_time)
+        #history_entry = History(action=f"{name} added a new debt of ₱{amount:.2f} for '{reason}'")
         #history_entry = History(action=f"{debt.name} marked a debt as {debt.status}")
         db.session.add(history_entry)
         db.session.commit()
