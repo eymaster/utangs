@@ -9,48 +9,36 @@
       background-color: var(--bs-body-bg);
       transition: background-color 0.3s ease;
     }
+
     .card-shadow {
       box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
     }
-    .table thead th {
-      vertical-align: middle;
-    }
+
     .table tbody tr:hover {
       background-color: rgba(0, 123, 255, 0.05);
     }
-    .sticky-add-btn {
-      position: sticky;
-      bottom: 0;
-      z-index: 10;
+
+    @media (max-width: 576px) {
+      .table th, .table td {
+        font-size: 0.85rem;
+        padding: 0.3rem;
+      }
+    }
+
+    .theme-label {
+      transition: color 0.3s ease;
     }
   </style>
 </head>
-<body class="container py-4">
+<body class="container py-3">
 
   <!-- Dark Mode Toggle -->
-  <div class="d-flex justify-content-end mb-3">
+  <div class="d-flex justify-content-end align-items-center mb-3">
     <div class="form-check form-switch">
       <input class="form-check-input" type="checkbox" id="themeToggle">
-      <label class="form-check-label" for="themeToggle">Dark/Light Mode</label>
+      <label class="form-check-label theme-label ms-2" for="themeToggle" id="themeLabel">Dark Mode</label>
     </div>
   </div>
-
-  <!-- Filter by Name -->
-  <form method="get" class="row g-2 align-items-center mb-4" action="{{ url_for('debts') }}">
-    <div class="col-md-6 col-sm-8 col-9">
-      <select name="name" class="form-select" onchange="this.form.submit()">
-        <option value="">All Names</option>
-        {% for name in all_names %}
-          <option value="{{ name }}" {% if name == name_filter %}selected{% endif %}>{{ name }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    {% if name_filter %}
-    <div class="col-auto">
-      <a href="{{ url_for('debts') }}" class="btn btn-outline-secondary">Clear</a>
-    </div>
-    {% endif %}
-  </form>
 
   <!-- UTANGS Summary Table -->
   <button class="btn btn-outline-primary mb-3 w-100" data-bs-toggle="collapse" data-bs-target="#debtTabletot">
@@ -58,7 +46,7 @@
   </button>
   <div class="collapse show" id="debtTabletot">
     <div class="card card-body card-shadow mb-4 p-0 table-responsive">
-      <div class="alert alert-warning m-0 rounded-0 p-3">
+      <div class="alert alert-warning m-0 rounded-0 p-3 text-center">
         <strong>Total Unpaid:</strong> ₱{{ "%.2f"|format(unpaid_total) }}
       </div>
       <table class="table table-striped table-hover mb-0 text-center">
@@ -80,9 +68,26 @@
     </div>
   </div>
 
+  <!-- Filter by Name -->
+  <form method="get" class="row g-2 align-items-center mb-4" action="{{ url_for('debts') }}">
+    <div class="col-8 col-sm-6">
+      <select name="name" class="form-select" onchange="this.form.submit()">
+        <option value="">All Names</option>
+        {% for name in all_names %}
+        <option value="{{ name }}" {% if name == name_filter %}selected{% endif %}>{{ name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% if name_filter %}
+    <div class="col-4 col-sm-3">
+      <a href="{{ url_for('debts') }}" class="btn btn-outline-secondary w-100">Clear</a>
+    </div>
+    {% endif %}
+  </form>
+
   <!-- Debt Records Table -->
-  <div class="card card-shadow mb-2">
-    <div class="card-header bg-dark text-white">
+  <div class="card card-shadow mb-4">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
       <h5 class="mb-0">📋 Detailed Debt List</h5>
     </div>
     <div class="table-responsive">
@@ -104,9 +109,9 @@
             <td>{{ debt.reason }}</td>
             <td>
               {% if debt.status == 'Paid' %}
-                <span class="badge bg-success">Paid</span>
+              <span class="badge bg-success">Paid</span>
               {% else %}
-                <span class="badge bg-warning text-dark">Pending</span>
+              <span class="badge bg-warning text-dark">Pending</span>
               {% endif %}
               <input type="checkbox" class="status-toggle ms-2" data-id="{{ debt.id }}" {% if debt.status == 'Paid' %}checked{% endif %}>
             </td>
@@ -121,46 +126,33 @@
     </div>
   </div>
 
-  <!-- Sort Dropdown Below Table -->
-  <div class="mt-4 mb-4 text-center">
-    <form method="get" action="{{ url_for('debts') }}">
-      <div class="row justify-content-center">
-        <div class="col-8 col-sm-6 col-md-4">
-          <select class="form-select" name="sort" onchange="this.form.submit()">
-            <option value="">Sort by...</option>
-            <option value="name_asc">Name A-Z</option>
-            <option value="name_desc">Name Z-A</option>
-            <option value="amount_asc">Amount Low to High</option>
-            <option value="amount_desc">Amount High to Low</option>
-            <option value="status">Status</option>
-          </select>
-        </div>
-      </div>
-    </form>
-  </div>
-
   <!-- Add Debt Button -->
-  <div class="sticky-add-btn">
-    <a href="/" class="btn btn-success w-100">➕ Add Another Debt</a>
-  </div>
+  <a href="/" class="btn btn-success w-100 mb-4">➕ Add Another Debt</a>
 
-  <!-- Scripts -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Dark Mode Toggle (with localStorage)
+    // Dark/Light Mode Toggle
     const themeToggle = document.getElementById('themeToggle');
     const root = document.documentElement;
+    const themeLabel = document.getElementById('themeLabel');
     const savedTheme = localStorage.getItem('theme');
+
+    function updateThemeLabel(theme) {
+      themeLabel.textContent = theme === 'light' ? 'Light Mode' : 'Dark Mode';
+    }
 
     if (savedTheme) {
       root.setAttribute('data-bs-theme', savedTheme);
       themeToggle.checked = savedTheme === 'light';
+      updateThemeLabel(savedTheme);
     }
 
     themeToggle.addEventListener('change', function () {
       const newTheme = this.checked ? 'light' : 'dark';
       root.setAttribute('data-bs-theme', newTheme);
       localStorage.setItem('theme', newTheme);
+      updateThemeLabel(newTheme);
     });
 
     // Status Toggle Handler
