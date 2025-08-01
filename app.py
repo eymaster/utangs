@@ -40,9 +40,11 @@ def index():
         status = request.form['status']  # get status
         db.session.add(Debt(name=name, amount=amount, reason=reason, status=status))
         db.session.commit()
-        history_entry = History(action=f"{debt.name} marked a debt as {debt.status}")
+        history_entry = History(action=f"{name} added a new debt of ₱{amount:.2f} for '{reason}'")
+        #history_entry = History(action=f"{debt.name} marked a debt as {debt.status}")
         db.session.add(history_entry)
         db.session.commit()
+        return redirect(url_for('debts'))
         # Inside your route that updates status
         #flash('Debt added successfully!', 'success')
         #return redirect('/index')
