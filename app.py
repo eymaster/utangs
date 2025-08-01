@@ -35,13 +35,13 @@ class History(db.Model):
 
 # ✅ Now it's safe to drop the table
 
-@app.route('/delete-history-table', methods=['POST'])
-def delete_history_table():
-    try:
-        History.__table__.drop(db.engine)
-        return "✅ History table has been dropped."
-    except Exception as e:
-        return f"❌ Error: {str(e)}"
+#@app.route('/delete-history-table', methods=['POST'])
+#def delete_history_table():
+    #try:
+        #History.__table__.drop(db.engine)
+       # return "✅ History table has been dropped."
+   # except Exception as e:
+        #return f"❌ Error: {str(e)}"
 
 #@app.route('/del', methods=['POST'])
 #def delete_table():
