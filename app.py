@@ -13,8 +13,12 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # Render sets this
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+with app.app_context():
+    db.drop_all(bind=None, tables=[History.__table__])
+    print("Table dropped successfully.")
+    
 #with app.app_context():
-    #db.session.query(History).delete()
+    #db.session.query(Debt).delete()
     #db.session.commit()
 #with app.app_context():
     #db.session.execute('ALTER TABLE debt ADD COLUMN lender VARCHAR(100);')
