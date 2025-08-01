@@ -90,6 +90,7 @@ def debts():
     unpaid_total = sum(debt.amount for debt in all_debts if debt.status == 'Pending')
     # Show only unpaid totals per person
     debts_summary = db.session.query(Debt.name,db.func.sum(Debt.amount)).filter(Debt.status == 'Pending').group_by(Debt.name).all()
+    history_logs = db.session.query(History).order_by(History.timestamp.desc()).limit(50).all()
     return render_template(
         "debts.html",
         debts=all_debts,
@@ -97,7 +98,8 @@ def debts():
         total_debt=total_debt,  # Optional if you don't use it anymore
         unpaid_total=unpaid_total,
         name_filter=name_filter,
-        all_names=all_names)
+        all_names=all_names,
+        history_logs=history_logs)
 
     #return render_template("debts.html", debts=all_debts, debts_summary=debts_summary, total_debt=total_debt)
 
