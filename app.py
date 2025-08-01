@@ -34,13 +34,6 @@ class History(db.Model):
     action = db.Column(db.String(200), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-
-class HistoryLog(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    action = db.Column(db.String(255), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-
-
 # ✅ Now it's safe to drop the table
 
 #@app.route('/delete-history-table', methods=['POST'])
@@ -186,16 +179,17 @@ def delete(debt_id):
     db.session.commit()
     return redirect('/debts')
 
-@app.route('/delete/<int:id>', methods=['DELETE'])
-def delete_debt(id):
-    debt = Debt.query.get_or_404(id)
-    log = HistoryLog(action=f"Deleted: {debt.name} ₱{debt.amount} for {debt.reason} ({debt.status})")
-    
-    db.session.delete(debt)
+@app.route('/delete/<int:debt_id>', methods=['DELETE'])
+def delete_debt(debt_id):
+    debt = Debt.query.get_or_404(debt_id)
+
+    # Log before deleting
+    log = History(action=f"{debt.name}'s debt of ₱{debt.amount:.2f} for '{debt.reason}' was deleted.")
     db.session.add(log)
+
+    db.session.delete(debt)
     db.session.commit()
-    
-    return '', 204
+    return jsonify({'success': True})
 
 
 # EDIT route - show form
@@ -210,25 +204,6 @@ def edit(debt_id):
         db.session.commit()
         return redirect('/debts')
     return render_template('edit.html', debt=debt)
-
-@app.route('/edit/<int:id>', methods=['POST'])
-def edit_debt(id):
-    debt = Debt.query.get_or_404(id)
-    old_data = f"{debt.name} ₱{debt.amount} for {debt.reason} ({debt.status})"
-
-    debt.name = request.form['name']
-    debt.amount = float(request.form['amount'])
-    debt.reason = request.form['reason']
-    debt.status = request.form['status']
-    db.session.commit()
-
-    new_data = f"{debt.name} ₱{debt.amount} for {debt.reason} ({debt.status})"
-    log = HistoryLog(action=f"Edited: {old_data} → {new_data}")
-    db.session.add(log)
-    db.session.commit()
-
-    return redirect(url_for('index'))
-
 
 @app.route('/summary_data')
 def summary_data():
