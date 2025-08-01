@@ -16,9 +16,9 @@ db = SQLAlchemy(app)
 #with app.app_context():
     #db.session.query(History).delete()
     #db.session.commit()
-with app.app_context():
-    db.session.query(Debt).delete()
-    db.session.commit()
+# with app.app_context():
+#     db.session.query(Debt).delete()
+#     db.session.commit()
     
 # Database model
 class Debt(db.Model):
