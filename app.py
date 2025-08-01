@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # Render sets this
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-db.drop_all(bind=None, tables=[History.__table__])
+
 
 # Database model
 class Debt(db.Model):
@@ -30,6 +30,11 @@ class History(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     action = db.Column(db.String(200), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+# ✅ Now it's safe to drop the table
+with app.app_context():
+    db.drop_all(bind=None, tables=[History.__table__])
+
 
 @app.route('/delete-table', methods=['POST'])
 def delete_table():
