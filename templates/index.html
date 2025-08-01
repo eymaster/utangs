@@ -1,9 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF‑8">
   <title>Utang Manager</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- PWA Support -->  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#1f1f1f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png">  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body { background: #1f1f1f; color: white; min-height: 100vh; display: flex; flex-direction: column; }
@@ -12,9 +15,7 @@
     .card-light { background: #f8f9fa; color: #212529; }
   </style>
 </head>
-<body>
-
-<header class="bg-gradient d-flex justify-content-between align-items-center p-3 shadow">
+<body><header class="bg-gradient d-flex justify-content-between align-items-center p-3 shadow">
   <a href="#" class="d-flex align-items-center text-white text-decoration-none">
     <img src="{{ url_for('static', filename='img.jpg') }}" width="40" height="40" class="me-2">
     <span class="fs-4 fw-bold">DebtHelp</span>
@@ -25,70 +26,61 @@
     <a class="nav-link text-white" href="/debts">Utangs</a>
     <a class="btn btn-light text-primary" href="#">Get Help Now</a>
   </nav>
-</header>
-
-<main class="container my-5">
+</header><main class="container my-5">
   <div class="text-center mb-4">
     <h1 class="fw-bold mb-2">💳 Utang Manager</h1>
     <p class="text-muted">Easily record and view all your debts in one place.</p>
-  </div>
-
-  <div class="d-grid gap-2 d-md-flex justify-content-md-between mb-3">
+  </div>  <div class="d-grid gap-2 d-md-flex justify-content-md-between mb-3">
     <button class="btn btn-outline-success" data-bs-toggle="collapse" data-bs-target="#debtForm">
       <i class="bi bi-plus-circle"></i> Add Utang
     </button>
     <a href="/debts" class="btn btn-outline-secondary"><i class="bi bi-table"></i> View All Debts</a>
-  </div>
-
-  <div class="collapse show" id="debtForm">
+  </div>  <div class="collapse show" id="debtForm">
   <div class="card card-light shadow-sm p-4 mb-5 mx-auto" style="max-width: 600px;">
     <h4 class="mb-4 text-center">➕ Add New Utang</h4>
     <form method="POST" action="/">
-      {{ get_flashed_messages()|join('<br>')|safe }}
+      {{ get_flashed_messages()|join('<br>')|safe }}<div class="row">
+    <div class="col-12 mb-3" id="newNameGroup">
+      <label class="form-label">New Name</label>
+      <input name="new_name" id="newNameInput" class="form-control" placeholder="Enter new name">
+    </div>
 
-      <div class="row">
-        <div class="col-12 mb-3" id="newNameGroup">
-          <label class="form-label">New Name</label>
-          <input name="new_name" id="newNameInput" class="form-control" placeholder="Enter new name">
-        </div>
-
-        <div class="col-12 mb-3" id="existingNameGroup">
-          <label class="form-label">Select Existing Name</label>
-          <select name="existing_name" id="existingNameSelect" class="form-select">
-            <option value="">-- Choose a name --</option>
-            {% for name in all_names %}
-              <option value="{{ name }}">{{ name }}</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Amount (PHP)</label>
-        <input name="amount" type="number" step="0.01" class="form-control" placeholder="e.g. 1000" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Reason</label>
-        <input name="reason" class="form-control" placeholder="e.g. Grocery Loan" required>
-      </div>
-
-      <div class="mb-4">
-        <label class="form-label">Status</label>
-        <select name="status" class="form-select" required>
-          <option value="Pending">Pending</option>
-          <option value="Paid">Paid</option>
-        </select>
-      </div>
-
-      <button class="btn btn-primary w-100">
-        <i class="bi bi-check-circle"></i> Submit Utang
-      </button>
-    </form>
+    <div class="col-12 mb-3" id="existingNameGroup">
+      <label class="form-label">Select Existing Name</label>
+      <select name="existing_name" id="existingNameSelect" class="form-select">
+        <option value="">-- Choose a name --</option>
+        {% for name in all_names %}
+          <option value="{{ name }}">{{ name }}</option>
+        {% endfor %}
+      </select>
+    </div>
   </div>
-</div>
 
-  <div>
+  <div class="mb-3">
+    <label class="form-label">Amount (PHP)</label>
+    <input name="amount" type="number" step="0.01" class="form-control" placeholder="e.g. 1000" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Reason</label>
+    <input name="reason" class="form-control" placeholder="e.g. Grocery Loan" required>
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label">Status</label>
+    <select name="status" class="form-select" required>
+      <option value="Pending">Pending</option>
+      <option value="Paid">Paid</option>
+    </select>
+  </div>
+
+  <button class="btn btn-primary w-100">
+    <i class="bi bi-check-circle"></i> Submit Utang
+  </button>
+</form>
+
+  </div>
+</div>  <div>
     <h4 class="mb-3">Debt Summary</h4>
     <div class="table-responsive rounded shadow-sm mb-3">
       <table class="table table-striped table-dark mb-0 text-center">
@@ -105,11 +97,8 @@
         </tbody>
       </table>
     </div>
-    <!--<div class="text-end text-white fw-bold">Total: ₱{{ "%.2f"|format(total_debt) }}</div> -->
   </div>
-</main>
-
-<footer class="bg-dark text-white py-4">
+</main><footer class="bg-dark text-white py-4">
   <div class="container d-flex flex-column flex-md-row justify-content-between">
     <p class="mb-3 mb-md-0">© 2025 DebtHelp Inc. All rights reserved.</p>
     <div>
@@ -118,10 +107,7 @@
       <a href="#" class="text-white"><i class="bi bi-linkedin"></i></a>
     </div>
   </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+</footer><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script><script>
   const newNameInput = document.getElementById("newNameInput");
   const existingNameSelect = document.getElementById("existingNameSelect");
   const newNameGroup = document.getElementById("newNameGroup");
@@ -147,6 +133,14 @@
   newNameInput.addEventListener("input", toggleNameFields);
   existingNameSelect.addEventListener("change", toggleNameFields);
   toggleNameFields(); // initial call
-</script>
-</body>
+
+  // PWA service worker registration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/static/service-worker.js')
+        .then(reg => console.log('Service worker registered.'))
+        .catch(err => console.error('Service worker registration failed:', err));
+    });
+  }
+</script></body>
 </html>
