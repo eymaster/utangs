@@ -2,6 +2,7 @@
 <html data-bs-theme="dark">
 <head>
   <title>Utang Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
@@ -17,6 +18,11 @@
     .table tbody tr:hover {
       background-color: rgba(0, 123, 255, 0.05);
     }
+    .sticky-add-btn {
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+    }
   </style>
 </head>
 <body class="container py-4">
@@ -31,7 +37,7 @@
 
   <!-- Filter by Name -->
   <form method="get" class="row g-2 align-items-center mb-4" action="{{ url_for('debts') }}">
-    <div class="col-auto">
+    <div class="col-md-6 col-sm-8 col-9">
       <select name="name" class="form-select" onchange="this.form.submit()">
         <option value="">All Names</option>
         {% for name in all_names %}
@@ -75,7 +81,7 @@
   </div>
 
   <!-- Debt Records Table -->
-  <div class="card card-shadow mb-4">
+  <div class="card card-shadow mb-2">
     <div class="card-header bg-dark text-white">
       <h5 class="mb-0">📋 Detailed Debt List</h5>
     </div>
@@ -115,8 +121,28 @@
     </div>
   </div>
 
+  <!-- Sort Dropdown Below Table -->
+  <div class="mt-4 mb-4 text-center">
+    <form method="get" action="{{ url_for('debts') }}">
+      <div class="row justify-content-center">
+        <div class="col-8 col-sm-6 col-md-4">
+          <select class="form-select" name="sort" onchange="this.form.submit()">
+            <option value="">Sort by...</option>
+            <option value="name_asc">Name A-Z</option>
+            <option value="name_desc">Name Z-A</option>
+            <option value="amount_asc">Amount Low to High</option>
+            <option value="amount_desc">Amount High to Low</option>
+            <option value="status">Status</option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+
   <!-- Add Debt Button -->
-  <a href="/" class="btn btn-success w-100">➕ Add Another Debt</a>
+  <div class="sticky-add-btn">
+    <a href="/" class="btn btn-success w-100">➕ Add Another Debt</a>
+  </div>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
