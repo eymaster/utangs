@@ -78,19 +78,22 @@ def edit_debt(id):
     debt.status = request.form['status']
 
     new_data = f"{debt.name} (₱{debt.amount:.2f}) — {debt.reason} — {debt.status}"
-    db.session.add(HistoryLog(action=f"Edited debt: {old_data} → {new_data}"))
+
+    if old_data != new_data:
+        db.session.add(HistoryLog(action=f"Edited debt: {old_data} → {new_data}"))
+
     db.session.commit()
     return redirect('/debts')
 
-# Delete Debt
-@app.route('/delete/<int:id>')
+# Delete Debt (AJAX-safe)
+@app.route('/delete/<int:id>', methods=['DELETE'])
 def delete_debt(id):
     debt = Debt.query.get_or_404(id)
-    log_text = f"Deleted debt for {debt.name} (₱{debt.amount:.2f}) — {debt.reason}"
+    log_text = f"Deleted debt for {debt.name} (₱{debt.amount:.2f}) — {debt.reason} — {debt.status}"
     db.session.delete(debt)
     db.session.add(HistoryLog(action=log_text))
     db.session.commit()
-    return redirect('/debts')
+    return jsonify({"success": True})
 
 # API Endpoint for Live Summary + Filtered Debts
 @app.route('/debts_data')
