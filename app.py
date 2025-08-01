@@ -35,7 +35,7 @@ class History(db.Model):
 
 
 
-@app.route('/delete-table', methods=['POST'])
+@app.route('/del', methods=['POST'])
 def delete_table():
     with app.app_context():
         db.session.query(History).delete()
