@@ -15,12 +15,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 try:
     with app.app_context():
-        db.drop_all(bind=None, tables=[Debt.__table__])
+        db.session.query(Debt).delete()
+        db.session.commit()
         print("Table dropped successfully.")
-
 except:
     print("already deleted")
-    
+
+#with app.app_context():
+   # db.drop_all(bind=None, tables=[Debt.__table__])
+   # print("Table dropped successfully.")
 #with app.app_context():
     #db.session.query(Debt).delete()
     #db.session.commit()
