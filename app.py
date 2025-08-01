@@ -24,7 +24,8 @@ class Debt(db.Model):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        name = request.form['name']
+        name = request.form.get("new_name") or request.form.get("existing_name")
+        #name = request.form['name']
         amount = float(request.form['amount'])
         reason = request.form['reason']
         status = request.form['status']  # get status
