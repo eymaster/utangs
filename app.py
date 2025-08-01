@@ -133,6 +133,12 @@ def edit(debt_id):
         db.session.commit()
         return redirect('/debts')
     return render_template('edit.html', debt=debt)
+
+@app.after_request
+def add_header(response):
+    response.cache_control.no_store = True
+    return response
+
 # One-time init route to create tables
 #@app.route('/initdb')
 def initdb():
