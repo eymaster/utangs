@@ -32,13 +32,14 @@ class History(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # ✅ Now it's safe to drop the table
-with app.app_context():
-    db.session.query(History).delete()
-    db.session.commit()
 
 
-#@app.route('/delete-table', methods=['POST'])
-#def delete_table():
+
+@app.route('/delete-table', methods=['POST'])
+def delete_table():
+    with app.app_context():
+        db.session.query(History).delete()
+        db.session.commit()
    # db.drop_all(bind=None, tables=[History.__table__])
   #  return 'Utang table dropped!'
    # db.session.query(YourModel).delete()
