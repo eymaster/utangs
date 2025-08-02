@@ -14,6 +14,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # Render
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 try:
+    @app.route('/drop-table')
+    def drop_table():
+        db.drop_all(bind=None, tables=[Debt.__table__])
+        return "Table dropped."
     with app.app_context():
         db.session.query(Debt).delete()
         db.session.commit()
