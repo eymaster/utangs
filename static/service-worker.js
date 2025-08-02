@@ -1,11 +1,11 @@
-
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open('utang-app-cache').then(cache => {
+    caches.open('utang-tracker').then(cache => {
       return cache.addAll([
         '/',
-        '/static/icons/icon-192.png',
-        '/static/icons/icon-512.png'
+        '/static/styles.css',
+        '/static/script.js',
+        '/static/manifest.json'
       ]);
     })
   );
@@ -13,8 +13,6 @@ self.addEventListener('install', e => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(response => {
-      return response || fetch(e.request);
-    })
+    caches.match(e.request).then(response => response || fetch(e.request))
   );
 });

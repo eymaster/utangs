@@ -1,0 +1,7 @@
+body {
+  transition: background-color 0.3s, color 0.3s;
+}
+.toggle-mode {
+  cursor: pointer;
+  font-size: 1.5rem;
+}
