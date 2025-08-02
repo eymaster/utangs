@@ -16,9 +16,14 @@ db = SQLAlchemy(app)
 try:
     @app.route('/drop-table')
     def drop_table():
-        db.drop_all(bind=None, tables=[Debt.__table__])
-        return "Table dropped."
-        print("Table dropped successfully.")
+        from app import app, db
+        #from models import Debt  # Or wherever your Debt model is defined
+        with app.app_context():
+            Debt.__table__.drop(db.engine)
+            print("Debt table dropped.")
+            db.drop_all(bind=None, tables=[Debt.__table__])
+            return "Table dropped."
+            print("Table dropped successfully.")
     with app.app_context():
         db.session.query(Debt).delete()
         db.session.commit()
@@ -63,11 +68,11 @@ class History(db.Model):
    # except Exception as e:
         #return f"❌ Error: {str(e)}"
 
-#@app.route('/del', methods=['POST'])
-#def delete_table():
-    #with app.app_context():
-        #db.session.query(History).delete()
-       # db.session.commit()
+@app.route('/del', methods=['POST'])
+def delete_table():
+    with app.app_context():
+        db.session.query(Debt).delete()
+        db.session.commit()
    # db.drop_all(bind=None, tables=[History.__table__])
   #  return 'Utang table dropped!'
    # db.session.query(YourModel).delete()
