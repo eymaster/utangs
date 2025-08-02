@@ -44,11 +44,11 @@ class History(db.Model):
    # except Exception as e:
         #return f"❌ Error: {str(e)}"
 
-#@app.route('/del', methods=['POST'])
-#def delete_table():
-    #with app.app_context():
-        #db.session.query(History).delete()
-       # db.session.commit()
+@app.route('/del', methods=['POST'])
+def delete_table():
+    with app.app_context():
+        db.session.query(History).delete()
+        db.session.commit()
    # db.drop_all(bind=None, tables=[History.__table__])
   #  return 'Utang table dropped!'
    # db.session.query(YourModel).delete()
