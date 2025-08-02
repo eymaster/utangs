@@ -3,9 +3,10 @@ from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from sqlalchemy.orm import aliased
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -108,3 +109,10 @@ def split():
         db.session.commit()
 
     return jsonify({"success": True})
+
+
+# One-time init route to create tables
+@app.route('/initdb')
+def initdb():
+    db.create_all()
+    return "Database tables created nyeee."
