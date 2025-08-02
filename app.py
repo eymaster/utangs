@@ -13,33 +13,10 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # Render sets this
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-try:
-    @app.route('/drop-table')
-    def drop_table():
-        from app import app, db
-        #from models import Debt  # Or wherever your Debt model is defined
-        with app.app_context():
-            Debt.__table__.drop(db.engine)
-            print("Debt table dropped.")
-            db.drop_all(bind=None, tables=[Debt.__table__])
-            return "Table dropped."
-            print("Table dropped successfully.")
-    with app.app_context():
-        db.session.query(Debt).delete()
-        db.session.commit()
-        print("Table dropped successfully.")
-except Exception as e:
-    print("already deleted " + str(e))
+#with app.app_context():
+    #db.session.query(History).delete()
+    #db.session.commit()
 
-#with app.app_context():
-   # db.drop_all(bind=None, tables=[Debt.__table__])
-   # print("Table dropped successfully.")
-#with app.app_context():
-    #db.session.query(Debt).delete()
-    #db.session.commit()
-#with app.app_context():
-    #db.session.execute('ALTER TABLE debt ADD COLUMN lender VARCHAR(100);')
-    #db.session.commit()
 # Database model
 class Debt(db.Model):
     __tablename__ = 'debt'
@@ -47,7 +24,6 @@ class Debt(db.Model):
     name = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     reason = db.Column(db.String(200), nullable=False)
-    lender = db.Column(db.String(100))  # ← Add this line
     status = db.Column(db.String(20), nullable=False, default='Pending')
 
 
@@ -68,11 +44,11 @@ class History(db.Model):
    # except Exception as e:
         #return f"❌ Error: {str(e)}"
 
-@app.route('/del', methods=['POST'])
-def delete_table():
-    with app.app_context():
-        db.session.query(Debt).delete()
-        db.session.commit()
+#@app.route('/del', methods=['POST'])
+#def delete_table():
+    #with app.app_context():
+        #db.session.query(History).delete()
+       # db.session.commit()
    # db.drop_all(bind=None, tables=[History.__table__])
   #  return 'Utang table dropped!'
    # db.session.query(YourModel).delete()
@@ -89,7 +65,6 @@ def index():
         amount = float(request.form['amount'])
         reason = request.form['reason']
         status = request.form['status']  # get status
-        #debt.lender = request.form['lender']
         db.session.add(Debt(name=name, amount=amount, reason=reason, status=status))
         db.session.commit()
         philippine_time = datetime.now(pytz.timezone("Asia/Manila"))
@@ -226,7 +201,6 @@ def delete_debt(debt_id):
 @app.route('/edit/<int:debt_id>', methods=['GET', 'POST'])
 def edit(debt_id):
     debt = Debt.query.get_or_404(debt_id)
-   # debt.lender = request.form['lender']
 
     if request.method == 'POST':
         old_data = f"{debt.name} ₱{debt.amount:.2f} '{debt.reason}' [{debt.status}]"
