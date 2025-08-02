@@ -6,11 +6,11 @@ import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # Render sets this
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///utang.db'
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#db.init_app(app)
+#db = SQLAlchemy(app)
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///utang.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
 with app.app_context():
     db.create_all()
@@ -66,10 +66,10 @@ def edit(id):
     return jsonify({'message': 'Updated'})
 
 # One-time init route to create tables
-@app.route('/initdb')
-def initdb():
-    db.create_all()
-    return "Database tables created nyeee."
+#@app.route('/initdb')
+#def initdb():
+    #db.create_all()
+   # return "Database tables created nyeee."
 
 if __name__ == '__main__':
     app.run(debug=True)
