@@ -18,6 +18,7 @@ try:
     def drop_table():
         db.drop_all(bind=None, tables=[Debt.__table__])
         return "Table dropped."
+        print("Table dropped successfully.")
     with app.app_context():
         db.session.query(Debt).delete()
         db.session.commit()
