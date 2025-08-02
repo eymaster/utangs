@@ -72,13 +72,6 @@ def add():
 def toggle_theme():
     return jsonify({"message": "Theme toggled"})
 
-
-# One-time init route to create tables
-@app.route('/initdb')
-def initdb():
-    db.create_all()
-    return "Database tables created nyeee."
-    
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
